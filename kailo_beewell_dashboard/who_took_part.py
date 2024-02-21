@@ -53,31 +53,45 @@ survey. This {type} describes the sample of pupils who completed the survey.'''
         return html_string
 
 
-def demographic_headers():
+def demographic_headers(survey_type='standard'):
     '''
     Creates dictionary of headers for the demographic section
+
+    Parameters
+    ----------
+    survey_type : string
+        Specifies whether this is for standard or symbol survey dashboard
 
     Returns
     -------
     header_dict : dictionary
         Dictionary where key is a variable name, and value is the header
     '''
-    header_dict = {
-        'year_group': 'Year group',
-        'fsm': 'Eligible for free school meals (FSM)',
-        'gender': 'Gender and transgender',
-        'sexual_orientation': 'Sexual orientation',
-        'care_experience': 'Care experience',
-        'young_carer': 'Young carers',
-        'neuro': 'Special educational needs and neurodivergence',
-        'ethnicity': 'Ethnicity',
-        'english_additional': 'English as an additional language',
-        'birth': 'Background'}
+    if survey_type == 'standard':
+        header_dict = {
+            'year_group': 'Year group',
+            'fsm': 'Eligible for free school meals (FSM)',
+            'gender': 'Gender and transgender',
+            'sexual_orientation': 'Sexual orientation',
+            'care_experience': 'Care experience',
+            'young_carer': 'Young carers',
+            'neuro': 'Special educational needs and neurodivergence',
+            'ethnicity': 'Ethnicity',
+            'english_additional': 'English as an additional language',
+            'birth': 'Background'}
+    elif survey_type == 'symbol':
+        header_dict = {
+            'gender': 'Gender',
+            'year_group': 'Year group',
+            'fsm': 'Eligible for free school meals (FSM)',
+            'ethnicity': 'Ethnicity',
+            'english_additional': 'English as an additional language'}
     return header_dict
 
 
-def demographic_plots(dem_prop, chosen_school, chosen_group,
-                      output='streamlit', content=None):
+def demographic_plots(
+        dem_prop, chosen_school, chosen_group, output='streamlit',
+        content=None, survey_type='standard'):
     '''
     Creates the plots for the Who Took Part page/section, with the relevant
     headers and descriptions, for the streamlit dashboard or PDF report.
@@ -96,6 +110,8 @@ def demographic_plots(dem_prop, chosen_school, chosen_group,
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
     content : list
         Optional input used when output=='pdf', contains HTML for report.
+    survey_type : string
+        Specifies whether this is for standard or symbol survey dashboard.
 
     Returns
     -------
@@ -113,25 +129,33 @@ def demographic_plots(dem_prop, chosen_school, chosen_group,
     chosen_result = extract_nested_results(
         chosen=chosen, group_lab='school_group_lab', plot_group=True)
 
-    # Import descriptions for the charts
-    response_descrip = create_response_description()
+    # Generate titles and descriptions for the standard survey, and list of
+    # header sections
+    if survey_type == 'standard':
+        # Import descriptions for the charts
+        response_descrip = create_response_description()
+        # Import headers
+        dem_header_dict = demographic_headers(survey_type)
+        header_list = dem_header_dict.keys()
+    # We don't want section titles and descriptions for the symbol survey
+    # so just create list to loop through based on measure names
+    elif survey_type == 'symbol':
+        header_list = chosen['measure']
 
-    # Import headers
-    dem_header_dict = demographic_headers()
-
-    # Loop through each of the groups of plots in dem_header_dict
+    # Loop through each of the groups of plots
     # This plots measures in loops, basing printed text on the measure names
     # and basing the titles of groups on the group names (which differs to the
     # survey responses page, which bases printed text on group names)
-    for plot_group in dem_header_dict.keys():
+    for plot_group in header_list:
 
-        # Add the title for that group
-        if output == 'streamlit':
-            st.header(dem_header_dict[plot_group])
-        elif output == 'pdf':
-            content.append(f'''<h1 style='page-break-before:always;'
-                           id='{plot_group}'>
-                           {dem_header_dict[plot_group]}</h1>''')
+        # Add the title for that group for standard survey
+        if survey_type == 'standard':
+            if output == 'streamlit':
+                st.header(dem_header_dict[plot_group])
+            elif output == 'pdf':
+                content.append(f'''<h1 style='page-break-before:always;'
+                            id='{plot_group}'>
+                            {dem_header_dict[plot_group]}</h1>''')
 
         # Find the measures in that group
         measures = chosen_result.loc[
@@ -145,26 +169,27 @@ def demographic_plots(dem_prop, chosen_school, chosen_group,
         for measure in measures:
             i += 1
 
-            # Add descriptive text if there is any
-            if measure in response_descrip.keys():
-                if output == 'streamlit':
-                    st.markdown(response_descrip[measure])
-                elif output == 'pdf':
-                    if i > 0:
-                        content.append(f'''
-<p style='page-break-before:always;'>{markdown(response_descrip[measure])}
-</p>''')
-                    else:
-                        content.append(f'''
-<p>{markdown(response_descrip[measure])}</p>''')
+            # Add descriptive text if there is any for standard survey
+            if survey_type == 'standard':
+                if measure in response_descrip.keys():
+                    if output == 'streamlit':
+                        st.markdown(response_descrip[measure])
+                    elif output == 'pdf':
+                        if i > 0:
+                            content.append(f'''
+    <p style='page-break-before:always;'>{markdown(response_descrip[measure])}
+    </p>''')
+                        else:
+                            content.append(f'''
+    <p>{markdown(response_descrip[measure])}</p>''')
 
             # Filter data for that measure and produce plot
             to_plot = chosen_result[chosen_result['measure'] == measure]
             if output == 'streamlit':
-                survey_responses(to_plot)
+                survey_responses(to_plot, page='demographic')
             elif output == 'pdf':
-                content = survey_responses(
-                        to_plot, font_size=14, output='pdf', content=content)
+                content = survey_responses(to_plot, font_size=14, output='pdf',
+                                           content=content, page='demographic')
 
     if output == 'pdf':
         return content

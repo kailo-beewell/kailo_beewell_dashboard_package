@@ -155,7 +155,7 @@ def extract_nested_results(chosen, group_lab, plot_group=False):
     return chosen_result
 
 
-def get_school_size(counts, school):
+def get_school_size(counts, school, survey_type='standard'):
     '''
     Get the total pupil number for a given school
 
@@ -165,6 +165,8 @@ def get_school_size(counts, school):
         Dataframe containing the count of pupils at each school
     school : string
         Name of the school
+    survey_type : string
+        Designates whether this filtering is for 'standard' or 'symbol' survey
 
     Returns
     -------
@@ -175,10 +177,11 @@ def get_school_size(counts, school):
     school_counts = counts.loc[counts['school_lab'] == school]
 
     # Find total school size
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+    df = school_counts[(school_counts['year_group_lab'] == 'All') &
+                       (school_counts['gender_lab'] == 'All') &
+                       (school_counts['fsm_lab'] == 'All')]
+    if survey_type == 'standard':
+        df = df[df['sen_lab'] == 'All']
+    school_size = df['count'].values[0].astype(int)
 
     return school_size

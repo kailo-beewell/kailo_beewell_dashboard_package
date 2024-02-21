@@ -7,9 +7,10 @@ import numpy as np
 import plotly.express as px
 import streamlit as st
 from .convert_image import convert_fig_to_html
+from .grammar import lower_first
 
 
-def create_group_list(drop):
+def create_group_list(drop, page='explore'):
     '''
     Creates list of the pupil groups who have been excluded as n<10. This is
     provided as a seperation function as wanted to create string depending on
@@ -22,9 +23,16 @@ def create_group_list(drop):
     ----------
     drop : series
         Contains the names of the groups that had less than 10 responses
+    page : string
+        Specifies whether this is for the 'explore' page or 'demographic' page.
+        Default is the 'explore' page.
     '''
     # Convert to list (if not already)
     drop = drop.to_list()
+
+    # Convert first letter to lower case (unless all are upper case)
+    drop = [lower_first(item) for item in drop]
+
     # Generate string with appropriate grammar
     if len(drop) == 1:
         string = drop[0]
@@ -32,10 +40,17 @@ def create_group_list(drop):
         string = f'{drop[0]} and {drop[1]}'
     elif len(drop) >= 3:
         string = f'''{drop[0]}, {', '.join(drop[1:-1])} and {drop[-1]}'''
+
+    # Add pupils with appropriate grammer
+    if page == 'explore':
+        string = f'{string} pupils'
+    elif page == 'demographic':
+        string = f'pupils at {string}'
     return string
 
 
-def survey_responses(dataset, font_size=16, output='streamlit', content=None):
+def survey_responses(dataset, font_size=16, output='streamlit', content=None,
+                     page='explore'):
     '''
     Create bar charts for each of the quetsions in the provided dataframe.
     The dataframe should contain questions which all have the same set
@@ -52,6 +67,9 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
         Must be either 'streamlit' or 'pdf, default is 'streamlit.
     content : list
         Optional input used when output=='pdf', contains HTML for report.
+    page : string
+        Specifies whether this is for the 'explore' page or 'demographic' page.
+        Default is the 'explore' page.
 
     Returns
     -------
@@ -91,16 +109,16 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
             # If there were some with n<10 but still some left to plot...
             if len(under_10.index) > 0 and len(df.index) > 0:
                 # Create explanation
-                dropped = create_group_list(under_10['group'])
-                kept = create_group_list(df['group'].drop_duplicates())
+                dropped = create_group_list(under_10['group'], page)
+                kept = create_group_list(df['group'].drop_duplicates(), page)
                 explanation = f'''
-There were less than 10 responses from {dropped} pupils so results are just
-shown for {kept} pupils.'''
+There were less than 10 responses from {dropped} so results are just
+shown for {kept}.'''
             # Else if all groups were removed and nothing left to plot...
             elif len(df.index) == 0:
-                dropped = create_group_list(under_10['group'])
+                dropped = create_group_list(under_10['group'], page)
                 explanation = f'''
-There were less than 10 responses from {dropped} pupils, so no results can
+There were less than 10 responses from {dropped}, so no results can
 be shown.'''
 
             # Print explanation on page for the removal of n<10 overall
