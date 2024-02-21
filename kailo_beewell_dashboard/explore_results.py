@@ -12,7 +12,7 @@ from .reshape_data import filter_by_group, extract_nested_results
 from .score_descriptions import score_descriptions
 
 
-def write_page_title(output='streamlit'):
+def write_page_title(output='streamlit', survey_type='standard'):
     '''
     Writes the title of this page/section (Explore Results), for the streamlit
     page or for the PDF report.
@@ -21,6 +21,8 @@ def write_page_title(output='streamlit'):
     ----------
     output : string
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
+    survey_type : string
+        Specifies whether this is for the 'standard' or 'symbol' survey.
 
     Returns
     -------
@@ -47,7 +49,10 @@ def write_page_title(output='streamlit'):
         type2 = 'section'
         line_break = '<br><br>'
     descrip = f'''
-This {type1} allows you to explore the results of pupils at your school.
+This {type1} allows you to explore the results of pupils at your school.'''
+
+    if survey_type == 'standard':
+        descrip += f'''
 {line_break} For each survey topic, you can see (a) a breakdown of how pupils
 at your school responded to each question in that topic, and (b) a chart
 building on results from the 'Summary' {type2} that allows you to understand
@@ -202,7 +207,8 @@ questions that relate to the topic of '{chosen_variable_lab.lower()}'.'''
         return content
 
 
-def get_chosen_result(chosen_variable, chosen_group, df, school):
+def get_chosen_result(chosen_variable, chosen_group, df, school,
+                      survey_type='standard'):
     '''
     Filters the dataframe with responses to each question, to just responses
     for the chosen topic, school and group.
@@ -218,6 +224,8 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
         Dataframe with responses to all the questions for all topics
     school : string
         Name of school to get results for
+    survey_type : string
+        Designates whether this filtering is for 'standard' or 'symbol' survey
 
     Returns
     ----------
@@ -228,8 +236,9 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
 
     '''
     # Filter by the specified school and grouping
-    chosen, group_lab = filter_by_group(df=df, chosen_group=chosen_group,
-                                        output='explore', chosen_school=school)
+    chosen, group_lab = filter_by_group(
+        df=df, chosen_group=chosen_group, output='explore',
+        chosen_school=school, survey_type=survey_type)
 
     # Filter by the chosen variable
     chosen = chosen[chosen['group'] == chosen_variable]
@@ -350,6 +359,7 @@ def create_bar_charts(chosen_variable, chosen_result,
     multiple_charts = define_multiple_charts()
 
     # Import descriptions for the groups of stacked bar charts
+    # Note: We still import for symbol dashboard but won't use
     response_descrip = create_response_description()
 
     # Define which variables need to be reversed - intention was to be mostly

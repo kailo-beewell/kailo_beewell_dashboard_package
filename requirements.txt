@@ -1,5 +1,5 @@
 # For package installation
-pip==23.3.2
+pip==24.0
 
 # For data processing
 numpy==1.26.0

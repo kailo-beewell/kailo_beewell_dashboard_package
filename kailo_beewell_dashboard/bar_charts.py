@@ -9,6 +9,32 @@ import streamlit as st
 from .convert_image import convert_fig_to_html
 
 
+def create_group_list(drop):
+    '''
+    Creates list of the pupil groups who have been excluded as n<10. This is
+    provided as a seperation function as wanted to create string depending on
+    three use cases - with the example of year group...:
+    (1) 'Year 7' pupils
+    (2) 'Year 7 and Year 9' pupils
+    (3) 'Year 7, Year 8 and Year 9' pupils (or longer)
+
+    Parameters
+    ----------
+    drop : series
+        Contains the names of the groups that had less than 10 responses
+    '''
+    # Convert to list (if not already)
+    drop = drop.to_list()
+    # Generate string with appropriate grammar
+    if len(drop) == 1:
+        string = drop[0]
+    elif len(drop) == 2:
+        string = f'{drop[0]} and {drop[1]}'
+    elif len(drop) >= 3:
+        string = f'''{drop[0]}, {', '.join(drop[1:-1])} and {drop[-1]}'''
+    return string
+
+
 def survey_responses(dataset, font_size=16, output='streamlit', content=None):
     '''
     Create bar charts for each of the quetsions in the provided dataframe.
@@ -59,20 +85,23 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
             # groups are, remove it from dataframe and print explanation
             mask = df['cat_lab'] == 'Less than 10 responses'
             under_10 = df[mask]
-            if len(under_10.index) == 1:
-                # Remove group from dataframe
-                df = df[~mask]
+            # Remove group from dataframe for plotting
+            df = df[~mask]
+
+            # If there were some with n<10 but still some left to plot...
+            if len(under_10.index) > 0 and len(df.index) > 0:
                 # Create explanation
-                dropped = np.unique(under_10['group'])[0]
-                kept = np.unique(df['group'])[0]
+                dropped = create_group_list(under_10['group'])
+                kept = create_group_list(df['group'].drop_duplicates())
                 explanation = f'''
 There were less than 10 responses from {dropped} pupils so results are just
 shown for {kept} pupils.'''
-            elif len(under_10.index) == 2:
-                unique_groups = np.unique(df['group'])
+            # Else if all groups were removed and nothing left to plot...
+            elif len(df.index) == 0:
+                dropped = create_group_list(under_10['group'])
                 explanation = f'''
-There were less than 10 responses from {unique_groups[0]} pupils and from
-{unique_groups[1]} pupils, so no results can be shown.'''
+There were less than 10 responses from {dropped} pupils, so no results can
+be shown.'''
 
             # Print explanation on page for the removal of n<10 overall
             if len(under_10.index) > 0:
@@ -82,7 +111,7 @@ There were less than 10 responses from {unique_groups[0]} pupils and from
                     temp_content.append(f'<p>{explanation}</p>')
 
             # Create plot if there was at least one group without NaN
-            if len(under_10.index) < 2:
+            if len(df.index) > 0:
 
                 # First, check for any individual categories censored due to
                 # n<10 (this is relevant to demographic page, the explore
@@ -90,7 +119,7 @@ There were less than 10 responses from {unique_groups[0]} pupils and from
                 # If there are any rows with NaN...
                 null_mask = df['count'].isnull()
                 if sum(null_mask) > 0:
-                    # Filter to NaN rows amd get the categories as a string
+                    # Filter to NaN rows and get the categories as a string
                     dropped = df.loc[null_mask, ['cat_lab', 'group']]
                     for school in dropped['group'].drop_duplicates():
                         dropped_string = ', '.join(dropped.loc[

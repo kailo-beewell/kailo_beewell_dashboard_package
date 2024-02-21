@@ -7,8 +7,8 @@ from ast import literal_eval
 import numpy as np
 
 
-def filter_by_group(df, chosen_group, output,
-                    chosen_school=None, chosen_variable=None):
+def filter_by_group(df, chosen_group, output, chosen_school=None,
+                    chosen_variable=None, survey_type='standard'):
     '''
     Filter dataframe so just contains rows relevant for chosen group (either
     results from all pupils, or from the two chosen groups) and school
@@ -26,6 +26,8 @@ def filter_by_group(df, chosen_group, output,
         Optional input, name of a school to filter to as well
     chosen_variable : string
         Optional input, name of a variable to filter to as well
+    survey_type : string
+        Designates whether this filtering is for 'standard' or 'symbol' survey
 
     Returns
     -------
@@ -52,8 +54,12 @@ def filter_by_group(df, chosen_group, output,
     # If the chosen group was All, then no changes are made, as this is default
     if chosen_group == 'By year group':
         group_lab = 'year_group_lab'
-        year_group = ['Year 8', 'Year 10']
-        order = ['Year 8', 'Year 10']
+        if survey_type == 'standard':
+            year_group = ['Year 8', 'Year 10']
+            order = ['Year 8', 'Year 10']
+        elif survey_type == 'symbol':
+            year_group = ['Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11']
+            order = ['Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11']
     elif chosen_group == 'By gender':
         group_lab = 'gender_lab'
         gender = ['Girl', 'Boy']
@@ -67,12 +73,13 @@ def filter_by_group(df, chosen_group, output,
         sen = ['SEN', 'Non-SEN']
         order = ['SEN', 'Non-SEN']
 
-    # Filter to chosen group
+    # Filter to chosen group (exc. SEN filter for symbol survey)
     chosen = df[
         (df['year_group_lab'].isin(year_group)) &
         (df['gender_lab'].isin(gender)) &
-        (df['fsm_lab'].isin(fsm)) &
-        (df['sen_lab'].isin(sen))]
+        (df['fsm_lab'].isin(fsm))]
+    if survey_type == 'standard':
+        chosen = chosen[chosen['sen_lab'].isin(sen)]
 
     # Filter to chosen school, if relevant
     if chosen_school is not None:

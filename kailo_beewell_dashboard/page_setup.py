@@ -30,9 +30,14 @@ def page_logo():
 ''', unsafe_allow_html=True)
 
 
-def page_setup():
+def page_setup(type):
     '''
     Set up page to standard conditions, with layout as specified
+
+    Parameters
+    ----------
+    type : string
+        Survey type - 'standard' or symbol'
     '''
     # Set up streamlit page parameters
     st.set_page_config(
@@ -40,8 +45,8 @@ def page_setup():
         page_icon='🐝',
         initial_sidebar_state='expanded',
         layout='centered',
-        menu_items={'About': '''
-Dashboard for schools completing the standard version of the #BeeWell survey in
+        menu_items={'About': f'''
+Dashboard for schools completing the {type} version of the #BeeWell survey in
 North Devon and Torridge in 2023/24.'''})
 
     # Import CSS style

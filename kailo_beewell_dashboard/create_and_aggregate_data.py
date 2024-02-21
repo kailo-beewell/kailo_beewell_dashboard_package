@@ -273,7 +273,8 @@ def calculate_scores(data):
 
 
 def results_by_school_and_group(
-        data, agg_func, no_pupils, response_col=None, labels=None):
+        data, agg_func, no_pupils, response_col=None, labels=None,
+        survey_type='standard'):
     '''
     Aggregate results for all possible schools and groups (setting result to 0
     or NaN if no pupils from a particular group are present).
@@ -296,6 +297,9 @@ def results_by_school_and_group(
         a dictionary with all possible questions as keys, then values are
         another dictionary where keys are all the possible numeric (or nan)
         answers to the question, and values are relevant label for each answer.
+    survey_type : string
+        Either 'standard' or 'symbol' survey - default is standard - so that
+        appropriate demographic groupings are performed.
 
     Returns
     -------
@@ -309,16 +313,29 @@ def results_by_school_and_group(
 
     # Define the groups that we want to aggregate by - when providing a filter,
     # first value is the name of the category and the second is the variable
-    groups = [
-        'All',
-        ['Year 8', 'year_group_lab'],
-        ['Year 10', 'year_group_lab'],
-        ['Girl', 'gender_lab'],
-        ['Boy', 'gender_lab'],
-        ['FSM', 'fsm_lab'],
-        ['Non-FSM', 'fsm_lab'],
-        ['SEN', 'sen_lab'],
-        ['Non-SEN', 'sen_lab']]
+    if survey_type == 'standard':
+        groups = [
+            'All',
+            ['Year 8', 'year_group_lab'],
+            ['Year 10', 'year_group_lab'],
+            ['Girl', 'gender_lab'],
+            ['Boy', 'gender_lab'],
+            ['FSM', 'fsm_lab'],
+            ['Non-FSM', 'fsm_lab'],
+            ['SEN', 'sen_lab'],
+            ['Non-SEN', 'sen_lab']]
+    elif survey_type == 'symbol':
+        groups = [
+            'All',
+            ['Year 7', 'year_group_lab'],
+            ['Year 8', 'year_group_lab'],
+            ['Year 9', 'year_group_lab'],
+            ['Year 10', 'year_group_lab'],
+            ['Year 11', 'year_group_lab'],
+            ['Girl', 'gender_lab'],
+            ['Boy', 'gender_lab'],
+            ['FSM', 'fsm_lab'],
+            ['Non-FSM', 'fsm_lab']]
 
     # For each of the schools (which we know will all be present at least once
     # as we base the school list on the dataset itself)
@@ -353,7 +370,8 @@ def results_by_school_and_group(
             res['year_group_lab'] = 'All'
             res['gender_lab'] = 'All'
             res['fsm_lab'] = 'All'
-            res['sen_lab'] = 'All'
+            if survey_type == 'standard':
+                res['sen_lab'] = 'All'
             if group != 'All':
                 res[group[1]] = group[0]
 
@@ -511,3 +529,66 @@ def aggregate_proportions(data, response_col, labels, hide_low_response=False):
 
     # Combine into a single dataframe and return
     return pd.concat(rows)
+
+
+def aggregate_demographic(data, response_col, labels):
+    '''
+    Aggregates the demographic data by school and group (seperate to
+    results_by_school_and_group() as we want to aggregate by school v.s. all
+    others rather than for each school, and as we don't want to break down
+    results any further by any demographic characteristics)
+
+    Parameters
+    ----------
+    data : dataframe
+        Dataframe containing pupil-level demographic data
+    response_col : array
+        List of demographic columns to be aggregated
+    labels : dictionary
+        Dictionary with response options for each variable
+
+    Returns
+    -------
+    result : dataframe
+        Dataframe with % responses to demographic questions, for each school,
+        compared with all other schools
+    '''
+    # Initialise list to store results
+    result_list = list()
+
+    # For each of the schools (which we know will all be present at least once
+    # as we base the school list on the dataset itself)
+    schools = data['school_lab'].dropna().drop_duplicates().sort_values()
+    for school in schools:
+
+        # Add label identifying the school as being the current one or now
+        data['school_group'] = np.where(data['school_lab'] == school, 1, 0)
+
+        # Loop through each of those groups (current school vs. other schools)
+        for group in [1, 0]:
+
+            # Filter to the group and then aggregate the data
+            to_agg = data[data['school_group'] == group]
+            res = aggregate_proportions(
+                data=to_agg, response_col=response_col, labels=labels,
+                hide_low_response=True)
+
+            # Label with the group
+            res['school_lab'] = school
+            res['school_group'] = group
+
+            # Append results to list
+            result_list.append(res)
+
+    # Combine all the results into a single dataframe
+    result = pd.concat(result_list)
+
+    # Hide results where n<10 overall (in addition to item-level already done)
+    result.loc[result['n_responses'] < 10,
+               ['count', 'percentage', 'n_responses']] = np.nan
+
+    # Add labels that can use in figures
+    result['school_group_lab'] = np.where(
+        result['school_group'] == 1, 'Your school', 'Other schools')
+
+    return result
