@@ -5,17 +5,17 @@ temporary file that can then be downloaded from the dashboard
 import os
 import base64
 from markdown import markdown
-from utilities.reshape_data import get_school_size
-from utilities.summary_rag import summary_intro, summary_table
-from utilities.explore_results import (
+from .reshape_data import get_school_size
+from .summary_rag import summary_intro, summary_table
+from .explore_results import (
     write_page_title,
     create_topic_dict,
     create_explore_topic_page)
-from utilities.who_took_part import (
+from .who_took_part import (
     create_demographic_page_intro,
     demographic_headers,
     demographic_plots)
-from utilities.reuse_text import text_how_use, text_caution_comparing
+from .reuse_text import text_how_use, text_caution_comparing
 
 
 def create_static_report(chosen_school, chosen_group, df_scores, df_prop,

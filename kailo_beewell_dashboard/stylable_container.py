@@ -3,7 +3,7 @@ Generic function to produce stylised containers and then specific function
 for producing the stylised header containers used on the About page
 '''
 import streamlit as st
-from utilities.page_setup import blank_lines
+from .page_setup import blank_lines
 
 
 def stylable_container(key, css_styles):

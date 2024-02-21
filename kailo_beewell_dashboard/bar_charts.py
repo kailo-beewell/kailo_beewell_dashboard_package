@@ -1,12 +1,12 @@
 '''
 Functions used to produce the two types of bar chart
 '''
+from contextlib import nullcontext
+from markdown import markdown
 import numpy as np
 import plotly.express as px
 import streamlit as st
-from contextlib import nullcontext
-from utilities.convert_image import convert_fig_to_html
-from markdown import markdown
+from .convert_image import convert_fig_to_html
 
 
 def survey_responses(dataset, font_size=16, output='streamlit', content=None):

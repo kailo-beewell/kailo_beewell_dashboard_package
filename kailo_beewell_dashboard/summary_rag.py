@@ -6,8 +6,8 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 from markdown import markdown
-from utilities.reshape_data import filter_by_group
-from utilities.switch_page_button import switch_page
+from .reshape_data import filter_by_group
+from .switch_page_button import switch_page
 
 
 def html_rag_container(text, background, font):

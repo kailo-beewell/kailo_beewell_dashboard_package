@@ -1,11 +1,11 @@
 '''
 Helper functions for the 'Who took part' section of the dashboard and report
 '''
-import streamlit as st
-from utilities.reshape_data import extract_nested_results
-from utilities.bar_charts import survey_responses
-from utilities.bar_charts_text import create_response_description
 from markdown import markdown
+import streamlit as st
+from .reshape_data import extract_nested_results
+from .bar_charts import survey_responses
+from .bar_charts_text import create_response_description
 
 
 def create_demographic_page_intro(school_size, output='streamlit'):

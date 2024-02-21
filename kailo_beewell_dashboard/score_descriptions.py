@@ -1,6 +1,8 @@
-# Dictionary with simple descriptions to support score interpretation
-# For each score, we have a list where the first item is the score range
-# and the second item is the interpretation of what higher scores indicate.
+'''
+Dictionary with simple descriptions to support score interpretation
+For each score, we have a list where the first item is the score range
+and the second item is the interpretation of what higher scores indicate.
+'''
 
 score_descriptions = {
     'autonomy': ['6 to 20', 'higher levels of autonomy'],

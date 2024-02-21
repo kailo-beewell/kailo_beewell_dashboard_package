@@ -5,11 +5,11 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from markdown import markdown
-from utilities.bar_charts_text import create_response_description
-from utilities.bar_charts import survey_responses, details_ordered_bar
-from utilities.summary_rag import result_box
-from utilities.reshape_data import filter_by_group, extract_nested_results
-from utilities.score_descriptions import score_descriptions
+from .bar_charts_text import create_response_description
+from .bar_charts import survey_responses, details_ordered_bar
+from .summary_rag import result_box
+from .reshape_data import filter_by_group, extract_nested_results
+from .score_descriptions import score_descriptions
 
 
 def write_page_title(output='streamlit'):
