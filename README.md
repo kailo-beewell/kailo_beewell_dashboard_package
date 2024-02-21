@@ -1,4 +1,4 @@
-# `kailo_beewell_dashboard`: tools to support creation of #BeeWell survey dashboards for the Kailo project.
+# `kailo-beewell-dashboard`: tools to support creation of #BeeWell survey dashboards for the Kailo project.
 
 [![ORCID: Amy Heather](https://img.shields.io/badge/ORCID-0000--0002--6596--3479-brightgreen)](https://orcid.org/0000-0002-6596-3479)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -12,4 +12,4 @@ This package contains functions that are used in the creation of the various #Be
 
 ## How to install?
 
-`pip install kailo_beewell_dashboard`
+`pip install kailo-beewell-dashboard`

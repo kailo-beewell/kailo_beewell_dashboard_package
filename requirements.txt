@@ -31,3 +31,6 @@ ipykernel==6.29.0
 
 # To create a streamlit dashboard
 streamlit>=1.31.0
+
+# To upload package to PYPI
+twine==5.0.0
