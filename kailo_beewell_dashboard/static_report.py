@@ -228,8 +228,8 @@ style='width:650px; height:192px;'>'''
     return html_content
 
 
-def create_static_symbol_report(chosen_school, chosen_group, df_prop, counts,
-                                dem_prop, pdf_title):
+def create_static_symbol_report(
+        chosen_school,  df_prop, counts, dem_prop, pdf_title):
     '''
     Generate a static symbol survey PDF report for the chosen school and group,
     with all the key information and figures from the dashboard
@@ -238,9 +238,6 @@ def create_static_symbol_report(chosen_school, chosen_group, df_prop, counts,
     ----------
     chosen_school : string
         Name of the chosen school
-    chosen_group : string
-        Name of the chosen group to view results by - options are
-        'For all pupils', 'By year group', 'By gender', 'By FSM' or 'By SEN'
     df_prop : dataframe
         Dataframe with proportion of each response to each survey question
     counts : dataframe
@@ -256,13 +253,11 @@ def create_static_symbol_report(chosen_school, chosen_group, df_prop, counts,
     # Create empty list to fill with HTML content for PDF report
     content = []
 
-    # Create dictionary with measures and labels to use in table of contents
-    survey_topics = df_prop['measure'].drop_duplicates()
-    survey_labels = [
-        x.replace('symbol_', '').capitalize() for x in survey_topics]
-    survey_dict = dict(zip(survey_topics, survey_labels))
-    dem_dict = dict(zip(dem_prop['measure'].drop_duplicates(),
-                        dem_prop['measure_lab'].drop_duplicates()))
+    # Create dictionary with groups and labels to use in table of contents
+    survey_groups = {'all': 'For all pupils',
+                     'year': 'By year group',
+                     'gender': 'By gender',
+                     'fsm': 'By FSM'}
 
     # Get school size
     school_size = get_school_size(counts, chosen_school, 'symbol')
@@ -279,9 +274,6 @@ def create_static_symbol_report(chosen_school, chosen_group, df_prop, counts,
 style='width:300px; height:182px;'>'''
     content.append(img_tag)
 
-    # Get group name with only first character modified to lower case
-    group_lower_first = chosen_group[0].lower() + chosen_group[1:]
-
     # Title and introduction
     title_page = f'''
 <div class='section_container'>
@@ -292,11 +284,7 @@ style='width:300px; height:182px;'>'''
     interactive dashboard at
     https://synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/.
     This report has been downloaded from that dashboard.<br><br>
-    There are four reports available - these have results: (a) from all
-    pupils, (b) by gender, (c) by free school meal (FSM) eligibility, and
-    (d) by year group.<br><br>
-    This report contains the results <b>{group_lower_first}</b> for
-    <b>{chosen_school}</b>.</p>
+    This report contains the results for <b>{chosen_school}</b>.</p>
 </div>
 '''
     content.append(title_page)
@@ -331,19 +319,15 @@ style='width:650px; height:192px;'>'''
 
     # Get all of the explore results pages as lines for the table of contents
     explore_results_pages = []
-    for key, value in survey_dict.items():
+    for key, value in survey_groups.items():
         line = f'''<li><a href='#{key}'>{value}</a></li>'''
         explore_results_pages.append(line)
 
     # Get the demographic headers as lines for the table of contents
-    demographic_pages = []
-    for key, value in dem_dict.items():
-        line = f'''<li><a href='#{key}'>{value}</a></li>'''
-        demographic_pages.append(line)
 
     content.append(f'''
 <div>
-    <h1 style='page-break-before:always;'>Table of Contents</h1>
+    <h1>Table of Contents</h1>
     <ul>
         <li><a href='#explore_results'>Explore results</a> - Explore how
             your pupils responded to each survey question
@@ -352,7 +336,6 @@ style='width:650px; height:192px;'>'''
         <br>
         <li><a href='#who_took_part'>Who took part</a> - See the
             characteristics of the pupils who took part in the survey
-            <ul>{''.join(demographic_pages)}</ul>
         </li>
     </ul>
 </div>
@@ -368,10 +351,18 @@ style='width:650px; height:192px;'>'''
     # Create pages with plots for each measure
     chosen_variable = 'symbol'
     df_prop['group'] = chosen_variable
-    chosen_result = get_chosen_result(chosen_variable, chosen_group, df_prop,
-                                      chosen_school, survey_type='symbol')
-    content = create_bar_charts(
-        chosen_variable, chosen_result, output='pdf', content=content)
+    for key, value in survey_groups.items():
+        # Add title for that group
+        content.append(f'''
+<h2 id='{key}'; style='page-break-before:always;'>Explore
+results {value[0].lower() + value[1:]}</h2>''')
+        # Get results for that school and group
+        chosen_result = get_chosen_result(
+            chosen_variable, chosen_group=value, df=df_prop,
+            school=chosen_school, survey_type='symbol')
+        # Add bar charts to the HTML
+        content = create_bar_charts(
+            chosen_variable, chosen_result, output='pdf', content=content)
 
     #########################
     # Who took part section #
