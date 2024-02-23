@@ -10,7 +10,9 @@ from .summary_rag import summary_intro, summary_table
 from .explore_results import (
     write_page_title,
     create_topic_dict,
-    create_explore_topic_page)
+    create_explore_topic_page,
+    get_chosen_result,
+    create_bar_charts)
 from .who_took_part import (
     create_demographic_page_intro,
     demographic_headers,
@@ -174,7 +176,7 @@ style='width:650px; height:192px;'>'''
     # Explore results section #
     ###########################
 
-    # Craete cover page with title and introduction
+    # Create cover page with title and introduction
     content.append(write_page_title(output='pdf'))
 
     # Create pages for all of the topics
@@ -254,12 +256,16 @@ def create_static_symbol_report(chosen_school, chosen_group, df_prop, counts,
     # Create empty list to fill with HTML content for PDF report
     content = []
 
-    # Get list of topics to use for table of contents
-    survey_topics = df_prop['measure_lab'].drop_duplicates()
-    dem_topics = dem_prop['measure_lab'].drop_duplicates()
+    # Create dictionary with measures and labels to use in table of contents
+    survey_topics = df_prop['measure'].drop_duplicates()
+    survey_labels = [
+        x.replace('symbol_', '').capitalize() for x in survey_topics]
+    survey_dict = dict(zip(survey_topics, survey_labels))
+    dem_dict = dict(zip(dem_prop['measure'].drop_duplicates(),
+                        dem_prop['measure_lab'].drop_duplicates()))
 
     # Get school size
-    # school_size = get_school_size(counts, chosen_school, 'symbol')
+    school_size = get_school_size(counts, chosen_school, 'symbol')
 
     ##############
     # Title page #
@@ -325,13 +331,13 @@ style='width:650px; height:192px;'>'''
 
     # Get all of the explore results pages as lines for the table of contents
     explore_results_pages = []
-    for key, value in survey_topics.items():
-        line = f'''<li><a href='#{value}'>{key}</a></li>'''
+    for key, value in survey_dict.items():
+        line = f'''<li><a href='#{key}'>{value}</a></li>'''
         explore_results_pages.append(line)
 
     # Get the demographic headers as lines for the table of contents
     demographic_pages = []
-    for key, value in dem_topics.items():
+    for key, value in dem_dict.items():
         line = f'''<li><a href='#{key}'>{value}</a></li>'''
         demographic_pages.append(line)
 
@@ -351,6 +357,35 @@ style='width:650px; height:192px;'>'''
     </ul>
 </div>
 ''')
+
+    ###########################
+    # Explore results section #
+    ###########################
+
+    # Create cover page with title and introduction
+    content.append(write_page_title(output='pdf', survey_type='symbol'))
+
+    # Create pages with plots for each measure
+    chosen_variable = 'symbol'
+    df_prop['group'] = chosen_variable
+    chosen_result = get_chosen_result(chosen_variable, chosen_group, df_prop,
+                                      chosen_school, survey_type='symbol')
+    content = create_bar_charts(
+        chosen_variable, chosen_result, output='pdf', content=content)
+
+    #########################
+    # Who took part section #
+    #########################
+
+    # Create cover page with title and introduction
+    content.append(create_demographic_page_intro(school_size, 'pdf'))
+
+    # Create pages with plots for each measure
+    dem_prop['plot_group'] = dem_prop['measure']
+    content = demographic_plots(
+        dem_prop=dem_prop, chosen_school=chosen_school,
+        chosen_group='For your school', output='pdf', content=content,
+        survey_type='symbol')
 
     ######################
     # Create HTML report #
