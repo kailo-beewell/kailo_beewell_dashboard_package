@@ -20,6 +20,92 @@ from .who_took_part import (
 from .reuse_text import reuse_text
 
 
+def logo_html():
+    '''
+    Generates HTML string to create logo as displayed on cover page of reports.
+
+    Returns
+    -------
+    img_tag : string
+        HTML to generate the logo
+    '''
+    # Encode image
+    data_uri = base64.b64encode(open('images/kailo_beewell_logo_padded.png',
+                                     'rb').read()).decode('utf-8')
+    # Insert into HTML image tag
+    img_tag = f'''
+<img src='data:image/png;base64,{data_uri}' alt='Kailo #BeeWell logo'
+style='width:300px; height:182px;'>'''
+    return img_tag
+
+
+def illustration_html():
+    '''
+    Generates DIV element containing illustration as displayed on cover page of
+    reports.
+
+    Returns
+    -------
+    illustration : string
+        HTML to generate div containing the illustration
+    '''
+    # Encode image
+    data_uri = base64.b64encode(open('images/home_image_3_transparent.png',
+                                     'rb').read()).decode('utf-8')
+    # Insert into HTML image tag
+    img_tag = f'''
+<img src='data:image/png;base64,{data_uri}' alt='Kailo illustration'
+style='width:650px; height:192px;'>'''
+    # Insert into div
+    illustration = f'''
+<div style='width:100%; position:absolute; bottom:0;'>
+    {img_tag}
+</div>'''
+    return illustration
+
+
+def structure_report(pdf_title, content):
+    '''
+    Inserts the provided HTML into the structure of the report - PDF title,
+    importing and reading the CSS style, and inserting the content of report
+
+    Parameters
+    ----------
+    pdf_title : string
+        Title for the pdf file
+    content : string
+        HTML content of the report
+
+    Returns
+    -------
+    html_content : string
+        HTML to produce the styled report
+    '''
+    # Remove the final temporary image file
+    if os.path.exists('report/temp_image.png'):
+        os.remove('report/temp_image.png')
+
+    # Import the CSS stylesheet
+    with open('css/static_report_style.css') as css:
+        css_style = css.read()
+
+    html_content = f'''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{pdf_title}</title>
+    <style>
+        {css_style}
+    </style>
+</head>
+<body>
+    {''.join(content)}
+</body>
+</html>
+'''
+    return html_content
+
+
 def create_static_report(chosen_school, chosen_group, df_scores, df_prop,
                          counts, dem_prop, pdf_title):
     '''
@@ -64,13 +150,8 @@ def create_static_report(chosen_school, chosen_group, df_scores, df_prop,
     # Title page #
     ##############
 
-    # Logo - convert to HTML, then add to the content for the report
-    data_uri = base64.b64encode(open('images/kailo_beewell_logo_padded.png',
-                                     'rb').read()).decode('utf-8')
-    img_tag = f'''
-<img src='data:image/png;base64,{data_uri}' alt='Kailo #BeeWell logo'
-style='width:300px; height:182px;'>'''
-    content.append(img_tag)
+    # Add logo
+    content.append(logo_html())
 
     # Get group name with only first character modified to lower case
     group_lower_first = chosen_group[0].lower() + chosen_group[1:]
@@ -90,21 +171,11 @@ style='width:300px; height:182px;'>'''
     (d) by year group.<br><br>
     This report contains the results <b>{group_lower_first}</b> for
     <b>{chosen_school}</b>.</p>
-</div>
-'''
+</div>'''
     content.append(title_page)
 
-    # Illustration - convert to HTML, then add to the content for the report
-    data_uri = base64.b64encode(open('images/home_image_3_transparent.png',
-                                     'rb').read()).decode('utf-8')
-    img_tag = f'''
-<img src='data:image/png;base64,{data_uri}' alt='Kailo illustration'
-style='width:650px; height:192px;'>'''
-    illustration = f'''
-<div style='width:100%; position:absolute; bottom:0;'>
-    {img_tag}
-</div>'''
-    content.append(illustration)
+    # Add illustration
+    content.append(illustration_html())
 
     ################
     # Introduction #
@@ -202,28 +273,7 @@ style='width:650px; height:192px;'>'''
     # Create HTML report #
     ######################
 
-    # Remove the final temporary image file
-    if os.path.exists('report/temp_image.png'):
-        os.remove('report/temp_image.png')
-
-    # Import the CSS stylesheet
-    with open('css/static_report_style.css') as css:
-        css_style = css.read()
-
-    html_content = f'''
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{pdf_title}</title>
-    <style>
-        {css_style}
-    </style>
-</head>
-<body>
-    {''.join(content)}
-</body>
-</html>
-'''
+    html_content = structure_report(pdf_title, content)
 
     return html_content
 
@@ -266,13 +316,8 @@ def create_static_symbol_report(
     # Title page #
     ##############
 
-    # Logo - convert to HTML, then add to the content for the report
-    data_uri = base64.b64encode(open('images/kailo_beewell_logo_padded.png',
-                                     'rb').read()).decode('utf-8')
-    img_tag = f'''
-<img src='data:image/png;base64,{data_uri}' alt='Kailo #BeeWell logo'
-style='width:300px; height:182px;'>'''
-    content.append(img_tag)
+    # Add logo
+    content.append(logo_html())
 
     # Title and introduction
     title_page = f'''
@@ -285,21 +330,11 @@ style='width:300px; height:182px;'>'''
     https://synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/.
     This report has been downloaded from that dashboard.<br><br>
     This report contains the results for <b>{chosen_school}</b>.</p>
-</div>
-'''
+</div>'''
     content.append(title_page)
 
-    # Illustration - convert to HTML, then add to the content for the report
-    data_uri = base64.b64encode(open('images/home_image_3_transparent.png',
-                                     'rb').read()).decode('utf-8')
-    img_tag = f'''
-<img src='data:image/png;base64,{data_uri}' alt='Kailo illustration'
-style='width:650px; height:192px;'>'''
-    illustration = f'''
-<div style='width:100%; position:absolute; bottom:0;'>
-    {img_tag}
-</div>'''
-    content.append(illustration)
+    # Add illustration
+    content.append(illustration_html())
 
     ################
     # Introduction #
@@ -382,27 +417,6 @@ results {value[0].lower() + value[1:]}</h2>''')
     # Create HTML report #
     ######################
 
-    # Remove the final temporary image file
-    if os.path.exists('report/temp_image.png'):
-        os.remove('report/temp_image.png')
-
-    # Import the CSS stylesheet
-    with open('css/static_report_style.css') as css:
-        css_style = css.read()
-
-    html_content = f'''
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{pdf_title}</title>
-    <style>
-        {css_style}
-    </style>
-</head>
-<body>
-    {''.join(content)}
-</body>
-</html>
-'''
+    html_content = structure_report(pdf_title, content)
 
     return html_content
