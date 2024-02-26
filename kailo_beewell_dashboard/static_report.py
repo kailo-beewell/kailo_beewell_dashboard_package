@@ -17,7 +17,7 @@ from .who_took_part import (
     create_demographic_page_intro,
     demographic_headers,
     demographic_plots)
-from .reuse_text import text_how_use, text_caution_comparing
+from .reuse_text import reuse_text
 
 
 def create_static_report(chosen_school, chosen_group, df_scores, df_prop,
@@ -116,11 +116,11 @@ style='width:650px; height:192px;'>'''
 
     # Using the report (duplicate text with About.py)
     content.append('<h2>How to use this report</h2>')
-    content.append(markdown(text_how_use()))
+    content.append(markdown(reuse_text['how_to_use_results']))
 
     # Comparison warning (duplicate text with Explore results.py)
     content.append('<h2>Comparing between schools</h2>')
-    content.append(markdown(text_caution_comparing()))
+    content.append(markdown(reuse_text['caution_comparing']))
 
     #####################
     # Table of contents #
@@ -311,7 +311,7 @@ style='width:650px; height:192px;'>'''
 
     # Using the report (duplicate text with About.py)
     content.append('<h2>How to use this report</h2>')
-    content.append(markdown(text_how_use()))
+    content.append(markdown(reuse_text['caution_comparing']))
 
     #####################
     # Table of contents #
