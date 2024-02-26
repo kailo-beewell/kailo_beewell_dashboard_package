@@ -122,7 +122,7 @@ There were less than 10 responses from {dropped}, so no results can
 be shown.'''
 
             # Print explanation on page for the removal of n<10 overall
-            if len(under_10.index) > 0:
+            if (len(under_10.index) > 0) or (len(df.index) == 0):
                 if output == 'streamlit':
                     st.markdown(explanation)
                 elif output == 'pdf':
@@ -229,16 +229,16 @@ Due to small sample sizes, response rates are hidden for:
                 # PDF: Write image to a temporary PNG file, convert that
                 # to HTML, and add the image HTML to temp_content
                 elif output == 'pdf':
-
                     # Make and add HTML image tag to temp_content
                     temp_content.append(convert_fig_to_html(
                         fig=fig, alt_text=measure))
 
-                    # Insert temp_content into a div class and add to content
-                    content.append(f'''
-    <div class='responses_container'>
-        {''.join(temp_content)}
-    </div>''')
+            # Insert temp_content into a div class and add to content
+            if output == 'pdf':
+                content.append(f'''
+<div class='responses_container'>
+{''.join(temp_content)}
+</div>''')
 
     # At the end of the loop, if PDF report, return content
     if output == 'pdf':
