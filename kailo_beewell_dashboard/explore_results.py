@@ -154,8 +154,8 @@ id='{chosen_variable}'>{chosen_variable_lab}</h1>''')
 
     # Create description string
     topic_descrip = f'''
-<p style='text-align:center;'><b>These questions are about
-{description[f'{chosen_variable}_score'].lower()}</b></p>'''
+<p style='text-align:center;'><b>These questions are
+about {description[f'{chosen_variable}_score'].lower()}</b></p>'''
 
     # Print that description string into streamlit page or PDF report HTML
     if output == 'streamlit':
@@ -369,7 +369,7 @@ def create_bar_charts(chosen_variable, chosen_result,
     reverse = ['esteem', 'negative', 'support', 'free_like', 'local_safe',
                'local_other', 'belong_local', 'bully']
 
-    # Create stacked bar chart with seperate chart groups if required
+    # Create bar chart with seperate chart groups if required
     if chosen_variable in multiple_charts:
         # Counter as we don't want to break page before first description,
         # but do for the later description

@@ -91,7 +91,7 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None,
             # Don't use in-built plotly title as that overlaps the legend if it
             # spans over 2 lines
             if output == 'streamlit':
-                st.markdown(f'**{measure}**')
+                st.markdown(f'**{measure.lstrip()}**')
             elif output == 'pdf':
                 temp_content.append(
                     f'''<p style='margin:0;'><strong>{measure}</strong></p>''')
