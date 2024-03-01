@@ -52,7 +52,7 @@ def create_group_list(drop, page='explore'):
 def survey_responses(dataset, font_size=16, output='streamlit', content=None,
                      page='explore'):
     '''
-    Create bar charts for each of the quetsions in the provided dataframe.
+    Create bar charts for each of the questions in the provided dataframe.
     The dataframe should contain questions which all have the same set
     of possible responses.
 
