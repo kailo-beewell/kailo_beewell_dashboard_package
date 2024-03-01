@@ -41,7 +41,7 @@ To sort:
 * GitHub release
 * Update documentation... `make clean` and `make html`
 * Tests for each of the dashboards
-* Updating the requirements file in each of the dashboards to use latest version of package and rebuilding site on community cloud
+* Updating the requirements file in each of the dashboards to use latest version of package and rebuilding site on community cloud, and to have all the same packages and installations and stuff
 
 ## New contributors
 

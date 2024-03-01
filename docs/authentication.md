@@ -7,8 +7,16 @@ This guide provides a step-by-step on how I set up the user authentication for t
 ## How to set up user authentication
 
 1. If not already in environment, install django (add to requirements.txt, recreate environment)
-2. Create a Django app. In terminal: `django-admin startproject config .`. This produced a config folder containing 5 .py files.
-3. Create a superuser to manage all other users: `python3 manage.py migrate` and `python3 manage.py createsuperuser`. Then enter user as `kailobeewell` and the dartington email address. I have record of password personally which I can share with other team members.
+2. Create a Django app. In terminal:
+    * `django-admin startproject config .`
+    
+    This produced a config folder containing 5 .py files.
+3. Create a superuser to manage all other users:
+    * `python3 manage.py migrate`
+    * `python3 manage.py createsuperuser`
+
+    Then enter user as `kailobeewell` and the dartington email address. I have record of password personally which I can share with other team members.
+
 4. Start the server: `python3 manage.py runserver`.
 5. Open web-browser and go to http://localhost:8000/admin/. Login with the superuser username and password just created.
 6. Add some users by clicking '+ Add' next to Users, then entering a username and password for each user. For the synthetic dashboard, I create some basic logins (which need to be more secure for actual dashboard). For each user followed the format of:
