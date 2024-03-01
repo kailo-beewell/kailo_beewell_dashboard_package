@@ -7,11 +7,52 @@ import numpy as np
 import plotly.express as px
 import streamlit as st
 from .convert_image import convert_fig_to_html
+from .grammar import lower_first
 
 
-def survey_responses(dataset, font_size=16, output='streamlit', content=None):
+def create_group_list(drop, page='explore'):
     '''
-    Create bar charts for each of the quetsions in the provided dataframe.
+    Creates list of the pupil groups who have been excluded as n<10. This is
+    provided as a seperation function as wanted to create string depending on
+    three use cases - with the example of year group...:
+    (1) 'Year 7' pupils
+    (2) 'Year 7 and Year 9' pupils
+    (3) 'Year 7, Year 8 and Year 9' pupils (or longer)
+
+    Parameters
+    ----------
+    drop : series
+        Contains the names of the groups that had less than 10 responses
+    page : string
+        Specifies whether this is for the 'explore' page or 'demographic' page.
+        Default is the 'explore' page.
+    '''
+    # Convert to list (if not already)
+    drop = drop.to_list()
+
+    # Convert first letter to lower case (unless all are upper case)
+    drop = [lower_first(item) for item in drop]
+
+    # Generate string with appropriate grammar
+    if len(drop) == 1:
+        string = drop[0]
+    elif len(drop) == 2:
+        string = f'{drop[0]} and {drop[1]}'
+    elif len(drop) >= 3:
+        string = f'''{drop[0]}, {', '.join(drop[1:-1])} and {drop[-1]}'''
+
+    # Add pupils with appropriate grammer
+    if page == 'explore':
+        string = f'{string} pupils'
+    elif page == 'demographic':
+        string = f'pupils at {string}'
+    return string
+
+
+def survey_responses(dataset, font_size=16, output='streamlit', content=None,
+                     page='explore'):
+    '''
+    Create bar charts for each of the questions in the provided dataframe.
     The dataframe should contain questions which all have the same set
     of possible responses.
 
@@ -26,6 +67,9 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
         Must be either 'streamlit' or 'pdf, default is 'streamlit.
     content : list
         Optional input used when output=='pdf', contains HTML for report.
+    page : string
+        Specifies whether this is for the 'explore' page or 'demographic' page.
+        Default is the 'explore' page.
 
     Returns
     -------
@@ -47,7 +91,7 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
             # Don't use in-built plotly title as that overlaps the legend if it
             # spans over 2 lines
             if output == 'streamlit':
-                st.markdown(f'**{measure}**')
+                st.markdown(f'**{measure.lstrip()}**')
             elif output == 'pdf':
                 temp_content.append(
                     f'''<p style='margin:0;'><strong>{measure}</strong></p>''')
@@ -59,30 +103,33 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
             # groups are, remove it from dataframe and print explanation
             mask = df['cat_lab'] == 'Less than 10 responses'
             under_10 = df[mask]
-            if len(under_10.index) == 1:
-                # Remove group from dataframe
-                df = df[~mask]
+            # Remove group from dataframe for plotting
+            df = df[~mask]
+
+            # If there were some with n<10 but still some left to plot...
+            if len(under_10.index) > 0 and len(df.index) > 0:
                 # Create explanation
-                dropped = np.unique(under_10['group'])[0]
-                kept = np.unique(df['group'])[0]
+                dropped = create_group_list(under_10['group'], page)
+                kept = create_group_list(df['group'].drop_duplicates(), page)
                 explanation = f'''
-There were less than 10 responses from {dropped} pupils so results are just
-shown for {kept} pupils.'''
-            elif len(under_10.index) == 2:
-                unique_groups = np.unique(df['group'])
+There were less than 10 responses from {dropped} so results are just
+shown for {kept}.'''
+            # Else if all groups were removed and nothing left to plot...
+            elif len(df.index) == 0:
+                dropped = create_group_list(under_10['group'], page)
                 explanation = f'''
-There were less than 10 responses from {unique_groups[0]} pupils and from
-{unique_groups[1]} pupils, so no results can be shown.'''
+There were less than 10 responses from {dropped}, so no results can
+be shown.'''
 
             # Print explanation on page for the removal of n<10 overall
-            if len(under_10.index) > 0:
+            if (len(under_10.index) > 0) or (len(df.index) == 0):
                 if output == 'streamlit':
                     st.markdown(explanation)
                 elif output == 'pdf':
                     temp_content.append(f'<p>{explanation}</p>')
 
             # Create plot if there was at least one group without NaN
-            if len(under_10.index) < 2:
+            if len(df.index) > 0:
 
                 # First, check for any individual categories censored due to
                 # n<10 (this is relevant to demographic page, the explore
@@ -90,7 +137,7 @@ There were less than 10 responses from {unique_groups[0]} pupils and from
                 # If there are any rows with NaN...
                 null_mask = df['count'].isnull()
                 if sum(null_mask) > 0:
-                    # Filter to NaN rows amd get the categories as a string
+                    # Filter to NaN rows and get the categories as a string
                     dropped = df.loc[null_mask, ['cat_lab', 'group']]
                     for school in dropped['group'].drop_duplicates():
                         dropped_string = ', '.join(dropped.loc[
@@ -182,16 +229,16 @@ Due to small sample sizes, response rates are hidden for:
                 # PDF: Write image to a temporary PNG file, convert that
                 # to HTML, and add the image HTML to temp_content
                 elif output == 'pdf':
-
                     # Make and add HTML image tag to temp_content
                     temp_content.append(convert_fig_to_html(
                         fig=fig, alt_text=measure))
 
-                    # Insert temp_content into a div class and add to content
-                    content.append(f'''
-    <div class='responses_container'>
-        {''.join(temp_content)}
-    </div>''')
+            # Insert temp_content into a div class and add to content
+            if output == 'pdf':
+                content.append(f'''
+<div class='responses_container'>
+{''.join(temp_content)}
+</div>''')
 
     # At the end of the loop, if PDF report, return content
     if output == 'pdf':

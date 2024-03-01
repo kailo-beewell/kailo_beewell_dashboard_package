@@ -4,7 +4,6 @@ Helper function for importing the data from TiDB Cloud
 import numpy as np
 import pandas as pd
 import streamlit as st
-from pandas.testing import assert_frame_equal
 from tempfile import NamedTemporaryFile
 import pymysql
 
@@ -32,22 +31,31 @@ def get_df(query, conn):
     return df
 
 
-def import_tidb_data(tests=False):
+def import_tidb_data(survey_type):
     '''
     Imports all the datasets from TiDB Cloud, fixes any data type issues, and
     saves the datasets to the session state.
 
     Parameters
     ----------
-    tests : Boolean
-        Whether to run tests to check the data imported from TiDB cloud matches
-        the CSV files in the GitHub repository
+    survey_type : string
+        Designates whether to import for 'standard' or 'symbol' survey
     '''
+    # Define the session state variables (keys) and TIDB datasets (values)
+    if survey_type == 'standard':
+        items = {'scores': 'standard_school_aggregate_scores',
+                 'scores_rag': 'standard_school_aggregate_scores_rag',
+                 'responses': 'standard_school_aggregate_responses',
+                 'counts': 'standard_school_overall_counts',
+                 'demographic': 'standard_school_aggregate_demographic'}
+    elif survey_type == 'symbol':
+        items = {'responses': 'symbol_school_aggregate_responses',
+                 'counts': 'symbol_school_overall_counts',
+                 'demographic': 'symbol_school_aggregate_demographic'}
+
     # First, check if everything is in the session state - if so, don't need to
     # connect, but if missing stuff, will want to connect
-    items = ['scores', 'scores_rag', 'responses', 'counts', 'demographic']
-
-    if not all([x in st.session_state for x in items]):
+    if not all([x in st.session_state for x in items.keys()]):
 
         # Create temporary PEM file for setting up the connection
         with NamedTemporaryFile(suffix='.pem') as temp:
@@ -75,57 +83,33 @@ def import_tidb_data(tests=False):
                 ssl_ca=temp.name
             )
 
-            # Scores
-            if 'scores' not in st.session_state:
-                scores = get_df('SELECT * FROM aggregate_scores;', conn)
-                st.session_state['scores'] = scores
+            # Loop through each of the items
+            for key, value in items.items():
 
-            # Scores RAG
-            if 'scores_rag' not in st.session_state:
-                scores_rag = get_df(
-                    'SELECT * FROM aggregate_scores_rag;', conn)
-                # Convert columns to numeric
-                to_fix = ['mean', 'count', 'total_pupils', 'group_n',
-                          'group_wt_mean', 'group_wt_std', 'lower', 'upper']
-                for col in to_fix:
-                    scores_rag[col] = pd.to_numeric(scores_rag[col],
+                # Check if it is in the session state, and if not...
+                if key not in st.session_state:
+
+                    # Import data from TIDB cloud
+                    df = get_df(f'SELECT * FROM {value}', conn)
+
+                    # If dataset is scores with RAG ratings, convert
+                    # columns to numeric, and string 'nan' to actual np.nan
+                    if key == 'scores_rag':
+                        to_fix = ['mean', 'count', 'total_pupils',
+                                  'group_n', 'group_wt_mean', 'group_wt_std',
+                                  'lower', 'upper']
+                        for col in to_fix:
+                            df[col] = pd.to_numeric(df[col], errors='ignore')
+                        df['rag'] = df['rag'].replace('nan', np.nan)
+
+                    # If dataset is demographic, convert n_responses to numeric
+                    if key == 'demographic':
+                        df['n_responses'] = pd.to_numeric(df['n_responses'],
+                                                          errors='ignore')
+
+                    # If dataset is counts, convert counts to numeric
+                    if key == 'counts':
+                        df['count'] = pd.to_numeric(df['count'],
                                                     errors='ignore')
-                # Convert string 'nan' to actual np.nan
-                scores_rag['rag'] = scores_rag['rag'].replace('nan', np.nan)
-                st.session_state['scores_rag'] = scores_rag
-
-            # Responses
-            if 'responses' not in st.session_state:
-                responses = get_df('SELECT * FROM aggregate_responses;', conn)
-                st.session_state['responses'] = responses
-
-            # Overall counts
-            if 'counts' not in st.session_state:
-                counts = get_df('SELECT * FROM overall_counts;', conn)
-                counts['count'] = pd.to_numeric(counts['count'],
-                                                errors='ignore')
-                st.session_state['counts'] = counts
-
-            # Demographic
-            if 'demographic' not in st.session_state:
-                demographic = get_df(
-                    'SElECT * FROM aggregate_demographic;', conn)
-                st.session_state['demographic'] = demographic
-
-        # Run tests to check whether these match the csv files
-        if tests:
-            assert_frame_equal(
-                st.session_state.scores,
-                pd.read_csv('data/survey_data/aggregate_scores.csv'))
-            assert_frame_equal(
-                st.session_state.scores_rag,
-                pd.read_csv('data/survey_data/aggregate_scores_rag.csv'))
-            assert_frame_equal(
-                st.session_state.responses,
-                pd.read_csv('data/survey_data/aggregate_responses.csv'))
-            assert_frame_equal(
-                st.session_state.counts,
-                pd.read_csv('data/survey_data/overall_counts.csv'))
-            assert_frame_equal(
-                st.session_state.demographic,
-                pd.read_csv('data/survey_data/aggregate_demographic.csv'))
+                    # Save into the session state
+                    st.session_state[key] = df

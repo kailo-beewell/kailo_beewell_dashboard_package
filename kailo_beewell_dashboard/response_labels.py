@@ -4,9 +4,32 @@ in the survey
 '''
 
 
+def add_keys(keys, value, dictionary):
+    '''
+    Add multiple keys with the same value to the dictionary
+
+    Parameters
+    -----------
+    keys: array
+        Array with strings that are keys for the dictionary
+    value: string
+        Value of each key
+    dictionary: dictionary
+        To add the keys and values to, and to source them from too
+    '''
+    dictionary.update(dict.fromkeys(keys, dictionary[value]))
+
+
 def create_response_label_dict():
     '''
-    Creates dictionary with labels for each response in each question
+    Creates dictionary with labels for each response in each question in the
+    standard #BeeWell survey and council data.
+
+    Returns
+    -------
+    labels : dictionary
+        Dictionary where key is a topic name or group, and then key is another
+        dictionary where key is numeric answer and value is the label.
     '''
     # Define the labels to use for different columns
     labels = {
@@ -371,58 +394,110 @@ def create_response_label_dict():
         }
     }
 
-    def add_keys(keys, value, dictionary=labels):
-        '''
-        Add multiple keys with the same value to the dictionary
-        Inputs:
-        keys: Array with the keys
-        value: String which is the value for all the keys
-        dictionary: Dictionary to add the keys and values to, default is labels
-        '''
-        dictionary.update(dict.fromkeys(keys, labels[value]))
-
     # Add values for the keys below, so each key has the same set of values
     # (Rather than repeatedly defining them all above)
-    add_keys(['birth_parent1', 'birth_parent2', 'birth_you'], 'birth')
+    add_keys(['birth_parent1', 'birth_parent2', 'birth_you'], 'birth', labels)
     add_keys(['autonomy_pressure', 'autonomy_express', 'autonomy_decide',
               'autonomy_told', 'autonomy_myself', 'autonomy_choice'],
-             'autonomy')
+             'autonomy', labels)
     add_keys(['optimism_best', 'optimism_good', 'optimism_work'],
-             'optimism_other')
+             'optimism_other', labels)
     add_keys(['wellbeing_optimistic', 'wellbeing_useful', 'wellbeing_relaxed',
               'wellbeing_problems', 'wellbeing_thinking', 'wellbeing_close',
-              'wellbeing_mind'], 'wellbeing')
+              'wellbeing_mind'], 'wellbeing', labels)
     add_keys(['esteem_satisfied', 'esteem_qualities', 'esteem_well',
-              'esteem_value', 'esteem_good'], 'esteem')
+              'esteem_value', 'esteem_good'], 'esteem', labels)
     add_keys(['stress_control', 'stress_overcome', 'stress_confident',
-              'stress_way'], 'stress')
+              'stress_way'], 'stress', labels)
     add_keys(['negative_lonely', 'negative_unhappy', 'negative_like',
               'negative_cry', 'negative_school', 'negative_worry',
               'negative_sleep', 'negative_wake', 'negative_shy',
-              'negative_scared'], 'negative')
-    add_keys(['support_ways', 'support_look'], 'support')
+              'negative_scared'], 'negative', labels)
+    add_keys(['support_ways', 'support_look'], 'support', labels)
     add_keys(['places_barriers___1', 'places_barriers___2',
               'places_barriers___3', 'places_barriers___4',
               'places_barriers___5', 'places_barriers___6',
               'places_barriers___7', 'places_barriers___8',
-              'places_barriers___9'], 'places_barriers')
+              'places_barriers___9'], 'places_barriers', labels)
     add_keys(['staff_interest', 'staff_believe', 'staff_best', 'staff_listen',
               'home_interest', 'home_believe', 'home_best', 'home_listen'],
-             'relationships')
-    add_keys(['staff_talk', 'home_talk', 'peer_talk'], 'talk')
+             'relationships', labels)
+    add_keys(['staff_talk', 'home_talk', 'peer_talk'], 'talk', labels)
     add_keys(['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'],
-             'talk_listen')
+             'talk_listen', labels)
     add_keys(['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'],
-             'talk_helpful')
-    add_keys(['staff_talk_if', 'home_talk_if', 'peer_talk_if'], 'talk_if')
+             'talk_helpful', labels)
+    add_keys(['staff_talk_if', 'home_talk_if', 'peer_talk_if'],
+             'talk_if', labels)
     add_keys(['accept_staff', 'accept_home', 'accept_local',
-              'accept_peer'], 'accept')
+              'accept_peer'], 'accept', labels)
     add_keys(['local_support', 'local_trust', 'local_neighbours',
-              'local_places'], 'local_other')
+              'local_places'], 'local_other', labels)
     add_keys(['discrim_race', 'discrim_gender', 'discrim_orientation',
-              'discrim_disability', 'discrim_faith'], 'discrim')
+              'discrim_disability', 'discrim_faith'], 'discrim', labels)
     add_keys(['social_along', 'social_time', 'social_support', 'social_hard'],
-             'social')
-    add_keys(['bully_physical', 'bully_other', 'bully_cyber'], 'bully')
+             'social', labels)
+    add_keys(['bully_physical', 'bully_other', 'bully_cyber'], 'bully', labels)
+
+    return labels
+
+
+def create_symbol_response_label_dict():
+    '''
+    Creates dictionary with labels for each response in each question in the
+    symbol #BeeWell survey and council data.
+
+    Returns
+    -------
+    labels : dictionary
+        Dictionary where key is a topic name or group, and then key is another
+        dictionary where key is numeric answer and value is the label.
+    '''
+    # Define the labels to use for different columns
+    labels = {
+        'symbol': {
+            1: 'Happy',
+            2: 'Ok',
+            3: 'Sad'
+        },
+        'gender': {
+            0: 'Male',
+            1: 'Female'
+        },
+        'year_group': {
+            7: 'Year 7',
+            8: 'Year 8',
+            9: 'Year 9',
+            10: 'Year 10',
+            11: 'Year 11'
+        },
+        'fsm': {
+            0: 'Non-FSM',
+            1: 'FSM'
+        },
+        'sen': {
+            0: 'Non-SEN',
+            1: 'SEN'
+        },
+        'ethnicity': {
+            1: 'Ethnic minority',
+            2: 'White British'
+        },
+        'english_additional': {
+            0: 'No',
+            1: 'Yes'
+        },
+        'school': {
+            1: 'School A',
+            2: 'School B'
+        }
+    }
+
+    # Add values for the keys below, so each key has the same set of values
+    # (Rather than repeatedly defining them all above)
+    add_keys(['symbol_family', 'symbol_home', 'symbol_friends',
+              'symbol_choice', 'symbol_things', 'symbol_health',
+              'symbol_future', 'symbol_school', 'symbol_free',
+              'symbol_life'], 'symbol', labels)
 
     return labels

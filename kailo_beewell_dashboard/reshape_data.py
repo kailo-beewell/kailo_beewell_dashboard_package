@@ -7,8 +7,8 @@ from ast import literal_eval
 import numpy as np
 
 
-def filter_by_group(df, chosen_group, output,
-                    chosen_school=None, chosen_variable=None):
+def filter_by_group(df, chosen_group, output, chosen_school=None,
+                    chosen_variable=None, survey_type='standard'):
     '''
     Filter dataframe so just contains rows relevant for chosen group (either
     results from all pupils, or from the two chosen groups) and school
@@ -26,6 +26,8 @@ def filter_by_group(df, chosen_group, output,
         Optional input, name of a school to filter to as well
     chosen_variable : string
         Optional input, name of a variable to filter to as well
+    survey_type : string
+        Designates whether this filtering is for 'standard' or 'symbol' survey
 
     Returns
     -------
@@ -52,8 +54,12 @@ def filter_by_group(df, chosen_group, output,
     # If the chosen group was All, then no changes are made, as this is default
     if chosen_group == 'By year group':
         group_lab = 'year_group_lab'
-        year_group = ['Year 8', 'Year 10']
-        order = ['Year 8', 'Year 10']
+        if survey_type == 'standard':
+            year_group = ['Year 8', 'Year 10']
+            order = ['Year 8', 'Year 10']
+        elif survey_type == 'symbol':
+            year_group = ['Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11']
+            order = ['Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11']
     elif chosen_group == 'By gender':
         group_lab = 'gender_lab'
         gender = ['Girl', 'Boy']
@@ -67,12 +73,13 @@ def filter_by_group(df, chosen_group, output,
         sen = ['SEN', 'Non-SEN']
         order = ['SEN', 'Non-SEN']
 
-    # Filter to chosen group
+    # Filter to chosen group (exc. SEN filter for symbol survey)
     chosen = df[
         (df['year_group_lab'].isin(year_group)) &
         (df['gender_lab'].isin(gender)) &
-        (df['fsm_lab'].isin(fsm)) &
-        (df['sen_lab'].isin(sen))]
+        (df['fsm_lab'].isin(fsm))]
+    if survey_type == 'standard':
+        chosen = chosen[chosen['sen_lab'].isin(sen)]
 
     # Filter to chosen school, if relevant
     if chosen_school is not None:
@@ -148,7 +155,7 @@ def extract_nested_results(chosen, group_lab, plot_group=False):
     return chosen_result
 
 
-def get_school_size(counts, school):
+def get_school_size(counts, school, survey_type='standard'):
     '''
     Get the total pupil number for a given school
 
@@ -158,6 +165,8 @@ def get_school_size(counts, school):
         Dataframe containing the count of pupils at each school
     school : string
         Name of the school
+    survey_type : string
+        Designates whether this filtering is for 'standard' or 'symbol' survey
 
     Returns
     -------
@@ -168,10 +177,11 @@ def get_school_size(counts, school):
     school_counts = counts.loc[counts['school_lab'] == school]
 
     # Find total school size
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+    df = school_counts[(school_counts['year_group_lab'] == 'All') &
+                       (school_counts['gender_lab'] == 'All') &
+                       (school_counts['fsm_lab'] == 'All')]
+    if survey_type == 'standard':
+        df = df[df['sen_lab'] == 'All']
+    school_size = df['count'].values[0].astype(int)
 
     return school_size

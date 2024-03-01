@@ -1,0 +1,29 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: kailo-beewell-dashboard
+message: >-
+  If you use this package, please cite it using the metadata
+  from this file.
+type: software
+authors:
+  - given-names: Amy
+    family-names: Heather
+    email: a.heather2@exeter.ac.uk
+    affiliation: University of Exeter
+    orcid: 'https://orcid.org/0000-0002-6596-3479'
+repository-code: >-
+  https://github.com/kailo-beewell/kailo_beewell_dashboard_package
+repository-artifact: 'https://pypi.org/project/kailo-beewell-dashboard/'
+abstract: >-
+  Tools to support creation of #BeeWell survey dashboards
+  for the Kailo project
+keywords:
+  - python
+  - streamlit
+  - '#BeeWell'
+  - Kailo
+license: MIT
+version: 0.2.0
+date-released: '2024-02-21'

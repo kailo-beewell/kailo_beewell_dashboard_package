@@ -51,13 +51,24 @@ def password_entered():
         st.session_state['password_correct'] = False
 
 
-def login_screen():
+def login_screen(survey_type):
     '''
     Produces message that is displayed on the login screen.
+
+    Parameters
+    ----------
+    survey_type : string
+        Specifies whether this is for the 'standard' or 'symbol' survey.
     '''
+    # Login screen title
     st.title('The #BeeWell survey')
-    st.markdown('''
-Please enter your school username and password to login to the dashboard.
+
+    # Compose message, with content depending on dashboard
+    message = '''
+Please enter your school username and password to login to the dashboard.'''
+
+    if survey_type == 'standard':
+        message += '''
 
 For this synthetic dashboard, we have six schools - choose a username and
 password from the following:
@@ -67,19 +78,35 @@ password from the following:
 * '**schoold**' and '**schooldpassword**'
 * '**schoole**' and '**schoolepassword**'
 * '**schoolf**' and '**schoolfpassword**' - no Year 10s
-''')
+'''
+    elif survey_type == 'symbol':
+        message += '''
+
+For this synthetic dashboard, we have two schools - choose a username and
+password from the following:
+* '**schoola**' and '**schoolapassword**'
+* '**schoolb**' and '**schoolbpassword**'
+'''
+
+    # Print message onto the dashboard
+    st.markdown(message)
 
 
-def check_password():
+def check_password(survey_type):
     '''
     Function that returns 'True' if the user has entered the correct password
     Stores the user to the session state, and finds the school's full name,
     and adds that to the session state as well.
+
+    Parameters
+    ----------
+    survey_type : string
+        Specifies whether this is for the 'standard' or 'symbol' survey.
     '''
     # If have not yet logged in...
     if 'password_correct' not in st.session_state:
         # Show inputs for username and password
-        login_screen()
+        login_screen(survey_type)
         st.text_input('Username', key='username')
         st.text_input('Password', type='password', key='password')
         st.write('')
@@ -87,7 +114,7 @@ def check_password():
         return False
     elif not st.session_state['password_correct']:
         # Password not correct, show input boxes again and an error message
-        login_screen()
+        login_screen(survey_type)
         st.text_input('Username', key='username')
         st.text_input('Password', type='password', key='password')
         st.write('')
