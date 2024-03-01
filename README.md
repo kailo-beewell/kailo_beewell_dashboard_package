@@ -6,6 +6,8 @@
 
 This package contains functions that are used in the creation of the various #BeeWell survey dashboards for Kailo. They have been compiled into a single package to prevent code duplication between the different repositories.
 
+https://pypi.org/project/kailo-beewell-dashboard/
+
 ## Features
 
 1. Functions used to generate and aggregate synthetic data
@@ -14,3 +16,19 @@ This package contains functions that are used in the creation of the various #Be
 ## How to install?
 
 `pip install kailo-beewell-dashboard`
+
+## Citation
+
+If you use this package, please include the following citation
+
+> Heather, Amy. (2024). kailo-beewell-dashboard: tools to support creation of #BeeWell survey dashboards for the Kailo project. https://pypi.org/project/kailo-beewell-dashboard/.
+
+```tex
+@software{forecast_tools,
+  author       = {Heather, Amy},
+  title        = {kailo-beewell-dashboard},
+  year         = 2024,
+  publisher    = {PyPI},
+  url          = {https://pypi.org/project/kailo-beewell-dashboard/}
+}
+```
