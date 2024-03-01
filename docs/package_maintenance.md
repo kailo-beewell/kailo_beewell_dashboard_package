@@ -8,6 +8,20 @@ This will import a live version of your local package, assuming that your dashbo
 
 When running your streamlit site with `streamlit run Home.py`, it will use the package version at the point you ran that command, so you will need to re-run that to get any updates from the package.
 
+## Docstrings
+
+If you create any new functions - or modify existing functions - you should create or modify the docstrings accordingly. Docstrings for this package and the accompanying dashboard repositories are formatted based on the [numpy docstring style guide](https://numpydoc.readthedocs.io/en/latest/format.html).
+
+## Linting
+
+Whilst coding, you should be linting your .py and .ipynb files.
+* Use the `Flake8` VS Code extension to lint your .py files
+* Lint .ipynb files from the terminal by running `nbqa flake8 notebook.ipynb`
+
+## Updating data on TiDB Cloud
+
+If you have made changes to the processing steps that produce the aggregated data, you'll need to make sure that the updated csv files are uploaded to TiDB Cloud, replacing the previous data frames.
+
 ## Publishing a new version
 
 When you are ready to publish a new version of this package to PyPI, these are the recommended steps you should go through.
@@ -28,3 +42,10 @@ To sort:
 * Update documentation... `make clean` and `make html`
 * Tests for each of the dashboards
 * Updating the requirements file in each of the dashboards to use latest version of package and rebuilding site on community cloud
+
+## New contributors
+
+If new contributors join the project, substantially contributing to the package, then you should update the citations accordingly in:
+* `README.md` ORCID badges
+* `README.md` citation
+* `CITATION.cff` file
