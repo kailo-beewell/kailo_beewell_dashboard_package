@@ -22,6 +22,14 @@ Whilst coding, you should be linting your .py and .ipynb files.
 
 If you have made changes to the processing steps that produce the aggregated data, you'll need to make sure that the updated csv files are uploaded to TiDB Cloud, replacing the previous data frames.
 
+## Updating documentation
+
+If you make changes to this documentation, you can rebuild the HTML by running:
+1. `make clean`
+2. `make html`
+
+You can then view the new documentation by opening the file `docs/_build/html/index.html` in your browser.
+
 ## Publishing a new version
 
 When you are ready to publish a new version of this package to PyPI, these are the recommended steps you should go through.

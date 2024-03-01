@@ -1,8 +1,3 @@
-.. kailo-beewell-dashboard documentation master file, created by
-   sphinx-quickstart on Fri Mar  1 09:25:27 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Documentation for kailo-beewell-dashboard
 =========================================
 
