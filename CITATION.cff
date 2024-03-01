@@ -15,7 +15,7 @@ authors:
     orcid: 'https://orcid.org/0000-0002-6596-3479'
 repository-code: >-
   https://github.com/kailo-beewell/kailo_beewell_dashboard_package
-repository-artifact: 'https://pypi.org/project/kailo-beewell-dashboard/0.1.0/'
+repository-artifact: 'https://pypi.org/project/kailo-beewell-dashboard/'
 abstract: >-
   Tools to support creation of #BeeWell survey dashboards
   for the Kailo project
@@ -25,5 +25,5 @@ keywords:
   - '#BeeWell'
   - Kailo
 license: MIT
-version: 0.1.0
+version: 0.2.0
 date-released: '2024-02-21'

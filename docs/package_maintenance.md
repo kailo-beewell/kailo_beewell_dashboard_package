@@ -8,9 +8,15 @@ This will import a live version of your local package, assuming that your dashbo
 
 When running your streamlit site with `streamlit run Home.py`, it will use the package version at the point you ran that command, so you will need to re-run that to get any updates from the package.
 
-## Docstrings
+## Documentation
 
 If you create any new functions - or modify existing functions - you should create or modify the docstrings accordingly. Docstrings for this package and the accompanying dashboard repositories are formatted based on the [numpy docstring style guide](https://numpydoc.readthedocs.io/en/latest/format.html).
+
+Package documentation is created using Sphinx and hosted on Read the Docs (which automatically updates with GitHub pushes). You can preview updated documentation locally by running:
+1. `make clean`
+2. `make html`
+
+You can then view the local documentation by opening the file `docs/_build/html/index.html` in your browser.
 
 ## Linting
 
@@ -22,34 +28,36 @@ Whilst coding, you should be linting your .py and .ipynb files.
 
 If you have made changes to the processing steps that produce the aggregated data, you'll need to make sure that the updated csv files are uploaded to TiDB Cloud, replacing the previous data frames.
 
-## Updating documentation
-
-If you make changes to this documentation, you can rebuild the HTML by running:
-1. `make clean`
-2. `make html`
-
-You can then view the new documentation by opening the file `docs/_build/html/index.html` in your browser.
-
 ## Publishing a new version
 
 When you are ready to publish a new version of this package to PyPI, these are the recommended steps you should go through.
 
-1. Update version number using [Semantic Versioning](https://semver.org/spec/v2.0.0.html) in:
+1. **Test all dashboards** using the latest version of the package functions, by importing live version of package (`-e ../kailo_beewell_dashboard_package`) before proceeding
+2. **Update version number** using [Semantic Versioning](https://semver.org/spec/v2.0.0.html) in:
     * `__init__.py`
     * `CITATION.cff` 
     * `README.md` PyPI package badge
-2. Update `CHANGELOG.md` with new version, detailing:
+    * `README.md` Harvard citation
+    * `README.md` Latex citation - and add the new date for the latest version
+3. **Update changelog** (`CHANGELOG.md`) with new version, detailing:
     * Upload date
     * Contributors
     * Short section (one or two sentences) summarising changes
     * Detailed section with changes, with formatting based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - i.e. possible titles of 'added', 'changed', 'deprecated', 'removed', 'fixed', or 'security'
+4. **Push to main** on GitHub, and switch to the main branch
+5. **Upload to PyPI** for which you need to:
+    * a) Delete the existing `dist/` folder
+    * b) Run `python setup.py sdist bdist_wheel`
+    * c) Run `twine upload --skip-existing --repository-url https://upload.pypi.org/legacy/ dist/*`
+6. **Create GitHub release**
+7. **Update package version on community cloud** by:
+    * a) Updating package version in requirements.txt for each dashboard repository
+    * b) Pushing changes to main
+    * c) Rebooting dashboards on [https://share.streamlit.io/](https://share.streamlit.io/)
 
-To sort:
-* PyPI
-* GitHub release
-* Update documentation... `make clean` and `make html`
-* Tests for each of the dashboards
-* Updating the requirements file in each of the dashboards to use latest version of package and rebuilding site on community cloud, and to have all the same packages and installations and stuff
+The documentation is hosted with Read the Docs. If any changes were made to the package documentation, this should be automatically updated from your latest GitHub push.
+
+
 
 ## New contributors
 

@@ -9,9 +9,9 @@ This should align with:
 * Releases on [PyPI](https://pypi.org/project/kailo-beewell-dashboard/#history)
 * Releases on [GitHub](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/releases) (which are like a non-portable changelog only displayed to users within GitHub)
 
-## Unreleased (tbc: 0.2.0)
+## 0.2.0
 
-**Release date:** tbc
+**Release date:** 1st March 2024
 
 **Contributors:** Amy Heather
 
@@ -21,17 +21,27 @@ https://github.com/kailo-beewell/kailo_beewell_dashboard_package/compare/main...
 
 ### Added
 
-* Add new alternative inputs, outputs and process to existing functions that were developed for standard survey, so they can be used to output equivalent content for symbol survey. This includes
-    * `create_and_aggregate_data.py`
-    * `import_data.py` - add names of data for symbol survey as for session_state and as in TiDB Cloud, and simplified import function
-    * `page_setup.py` - to use name 'symbol' survey in the page menu
+* Created `CHANGELOG.md` (with backdated entry for 0.1.0)
+* Created `CITATION.cff`
+* Created package documentation using Sphinx and readthedocs - `docs/` and `.readthedocs.yaml`
 * `create_group_list()` in `bar_charts.py` which creates a correctly formatted list of strings depending on number of inputs (e.g. 'a', 'a and b', 'a, b and c')
 * `grammar.py` - contains `lower_first()` which converts first letter of string to lower case, unless all other letters are upper case
+* Add `aggregate_demographic()` to `create_and_aggregate_data.py`
+* Add new alternative inputs, outputs and process to existing functions that were developed for standard survey, so they can be used to output equivalent content for symbol survey. This includes
+    * `authentication.py` - custom login screen text
+    * `create_and_aggregate_data.py` - two possible sets of groups to aggregate by
+    * `explore_results.py` - custom page text, and providing survey type to functions like `filter_by_group()`
+    * `import_data.py` - add names of data for symbol survey as for session_state and as in TiDB Cloud, and simplified import function
+    * `page_setup.py` - to use name 'symbol' survey in the page menu
+    * `reshape_data.py` - for differences with symbol (e.g. exc SEN)
+    * `response_labels.py` - new function `create_symbol_response_label_dict()`
+    * `static_report.py` - converting some of the processes into standalone functions, so they can be imported to old function making static standard report and new function making static symbol report
+    * `who_took_part.py` - modifications for symbol like different headers and no descriptive text
 
 ### Changed
 
 * Moved all About page text to `reuse_text.py`
-* Upgraded pip to 24.0 in `requirements.txt`
+* In `requirements.txt`, upgraded pip to 24.0 and streamlit to 1.31.1, and add packages used to produce documentation (sphinx, sphinx-rtd-theme, myst-parser, sphinx-autoapi)
 
 ### Removed
 
