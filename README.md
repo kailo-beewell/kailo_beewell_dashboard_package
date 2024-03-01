@@ -6,7 +6,9 @@
 
 This package contains functions that are used in the creation of the various #BeeWell survey dashboards for Kailo. They have been compiled into a single package to prevent code duplication between the different repositories.
 
-https://pypi.org/project/kailo-beewell-dashboard/
+**Package on PyPI:** https://pypi.org/project/kailo-beewell-dashboard/
+
+**Package documentation:** http://kailo-beewell-dashboard.readthedocs.io/
 
 ## Features
 
