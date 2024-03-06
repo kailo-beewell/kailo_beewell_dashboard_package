@@ -8,6 +8,8 @@ This will import a live version of your local package, assuming that your dashbo
 
 When running your streamlit site with `streamlit run Home.py`, it will use the package version at the point you ran that command, so you will need to re-run that to get any updates from the package.
 
+It is important to constantly test and update code between the dashboard repositories if you make changes to the package code that would impact functioning - for example, changing a function or input names, requiring a new input in a function you're already using. I would recommend that you update it between the repositories immediately after you've finished making those changes (and not wait to update at the end, at which point you'll have made lots of changes and may not easily recall them all).
+
 ## Documentation
 
 If you create any new functions - or modify existing functions - you should create or modify the docstrings accordingly. Docstrings for this package and the accompanying dashboard repositories are formatted based on the [numpy docstring style guide](https://numpydoc.readthedocs.io/en/latest/format.html).
@@ -34,6 +36,8 @@ If you make any changes to where the data are stored on TiDB Cloud (e.g. differe
 
 When you are ready to publish a new version of this package to PyPI, these are the recommended steps you should go through.
 
+You should always be creating a **new version** when you push to main - or, in other words, the code in main should not include work-in-progress changes to the package. This likewise applies to your dashboard repositories - that you should only push to main with everything up to date (as community cloud builds based on main, and based on the kailo-beewell-dashboard package version last provided).
+
 1. **Test all dashboards** using the latest version of the package functions, by importing live version of package (`-e ../kailo_beewell_dashboard_package`) before proceeding
 2. **Update version number** using [Semantic Versioning](https://semver.org/spec/v2.0.0.html) in:
     * `__init__.py`
@@ -46,6 +50,7 @@ When you are ready to publish a new version of this package to PyPI, these are t
     * Contributors
     * Short section (one or two sentences) summarising changes
     * Detailed section with changes, with formatting based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - i.e. possible titles of 'added', 'changed', 'deprecated', 'removed', 'fixed', or 'security'
+    * Can be helpful to compare changes between main and your dev branch before you merge, as that will show you everything you have modified since your last version. TTo do so on the GitHub site, go to your dev branch (which should have a message like 'This branch is n commits ahead of main.'). Click on the hyperlink in that message, and then on the 'Files changed' tab.
 4. **Push to main** on GitHub, and switch to the main branch
 5. **Upload to PyPI** for which you need to:
     * a) Delete the existing `dist/` folder
