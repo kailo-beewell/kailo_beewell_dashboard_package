@@ -1,6 +1,7 @@
 '''
 Helper functions for creating and processing the pupil-level data
 '''
+import math
 import numpy as np
 import pandas as pd
 import re
@@ -272,12 +273,13 @@ def calculate_scores(data):
     return (data)
 
 
-def results_by_school_and_group(
+def results_by_site_and_group(
         data, agg_func, no_pupils, response_col=None, labels=None,
-        survey_type='standard'):
+        group_type='standard', site_col='school_lab'):
     '''
-    Aggregate results for all possible schools and groups (setting result to 0
-    or NaN if no pupils from a particular group are present).
+    Aggregate results for all possible sites (schools or areas) and groups
+    (setting result to 0 or NaN if no pupils from a particular group are
+    present).
 
     Parameters
     ----------
@@ -297,9 +299,12 @@ def results_by_school_and_group(
         a dictionary with all possible questions as keys, then values are
         another dictionary where keys are all the possible numeric (or nan)
         answers to the question, and values are relevant label for each answer.
-    survey_type : string
-        Either 'standard' or 'symbol' survey - default is standard - so that
-        appropriate demographic groupings are performed.
+    group_type : string
+        Links to the type of demographic groupings performed. Either
+        'standard', 'symbol' or 'none' - default is standard.
+    site_col: string
+        Name of column indicating the site - should be either 'school_lab' or
+        'msoa' - default is 'school_lab'.
 
     Returns
     -------
@@ -313,7 +318,7 @@ def results_by_school_and_group(
 
     # Define the groups that we want to aggregate by - when providing a filter,
     # first value is the name of the category and the second is the variable
-    if survey_type == 'standard':
+    if group_type == 'standard':
         groups = [
             'All',
             ['Year 8', 'year_group_lab'],
@@ -324,7 +329,7 @@ def results_by_school_and_group(
             ['Non-FSM', 'fsm_lab'],
             ['SEN', 'sen_lab'],
             ['Non-SEN', 'sen_lab']]
-    elif survey_type == 'symbol':
+    elif group_type == 'symbol':
         groups = [
             'All',
             ['Year 7', 'year_group_lab'],
@@ -336,18 +341,20 @@ def results_by_school_and_group(
             ['Boy', 'gender_lab'],
             ['FSM', 'fsm_lab'],
             ['Non-FSM', 'fsm_lab']]
+    elif group_type == 'none':
+        groups = ['All']
 
-    # For each of the schools (which we know will all be present at least once
-    # as we base the school list on the dataset itself)
-    schools = data['school_lab'].dropna().drop_duplicates().sort_values()
-    for school in schools:
+    # For each of the sites (which we know will all be present at least once
+    # as we base the site list on the dataset itself)
+    sites = data[site_col].dropna().drop_duplicates().sort_values()
+    for site in sites:
 
         # For each the groupings
         for group in groups:
 
-            # Find results for that school. If group is not equal to all,
+            # Find results for that site. If group is not equal to all,
             # then apply additional filters
-            to_agg = data[data['school_lab'] == school]
+            to_agg = data[data[site_col] == site]
             if group != 'All':
                 to_agg = to_agg[to_agg[group[1]] == group[0]]
 
@@ -363,17 +370,18 @@ def results_by_school_and_group(
                     res = agg_func(
                         data=to_agg, response_col=response_col, labels=labels)
 
-            # Specify what school it was
-            res['school_lab'] = school
+            # Specify what site it was
+            res[site_col] = site
 
             # Set each group as all, replacing one if filter used
-            res['year_group_lab'] = 'All'
-            res['gender_lab'] = 'All'
-            res['fsm_lab'] = 'All'
-            if survey_type == 'standard':
-                res['sen_lab'] = 'All'
-            if group != 'All':
-                res[group[1]] = group[0]
+            if group_type != 'none':
+                res['year_group_lab'] = 'All'
+                res['gender_lab'] = 'All'
+                res['fsm_lab'] = 'All'
+                if group_type == 'standard':
+                    res['sen_lab'] = 'All'
+                if group != 'All':
+                    res[group[1]] = group[0]
 
             # Append results to list
             result_list.append(res)
@@ -401,6 +409,32 @@ def convert_boolean(true_list, false_list, mask):
     iter_true = iter(true_list)
     iter_false = iter(false_list)
     return [next(iter_true) if item else next(iter_false) for item in mask]
+
+
+def aggregate_scores(df):
+    '''
+    Aggregate the score columns in the provided dataset, finding the mean and
+    count of non-NaN
+
+    Parameters:
+    -----------
+    df : dataframe
+        Dataframe with rows for each pupils and containing the score columns
+
+    Returns:
+    -------
+    res : dataframe
+        Dataframe with mean and count for each score
+    '''
+    # Make a list of the columns that provide a score
+    score_col = [col for col in df.columns if col.endswith('_score')]
+
+    res = pd.DataFrame({
+        # Find mean for each score column, ignoring NaN
+        'mean': df[score_col].mean(),
+        # Count non-NaN so we know the number of pupils used in the mea
+        'count': df[score_col].count()}).rename_axis('variable').reset_index()
+    return res
 
 
 def aggregate_proportions(data, response_col, labels, hide_low_response=False):
@@ -531,6 +565,27 @@ def aggregate_proportions(data, response_col, labels, hide_low_response=False):
     return pd.concat(rows)
 
 
+def aggregate_counts(df):
+    '''
+    Aggregates the provided dataframe by finding the total people in it.
+
+    Parameters
+    ----------
+    df : Dataframe
+        Dataframe with row for each pupil and columns that include the school
+        and groups needed by results_by_site_and_group()
+
+    Returns
+    -------
+    res : Dataframe
+        Dataframe with the count of pupils in each school and group
+    '''
+    res = pd.DataFrame({
+        'count': [len(df.index)]
+    })
+    return res
+
+
 def aggregate_demographic(data, response_col, labels):
     '''
     Aggregates the demographic data by school and group (seperate to
@@ -592,3 +647,104 @@ def aggregate_demographic(data, response_col, labels):
         result['school_group'] == 1, 'Your school', 'Other schools')
 
     return result
+
+
+def score_descriptives(values, counts):
+    '''
+    This function uses site-level data. Using the mean and count from each
+    group, it calculates the weighted mean and weighted standard deviation
+    of scores across the groups. It returns this, alongside a count of the
+    pupils and groups included.
+
+    Additional information about weighted standard deviation:
+    This normalises weights so they sum 1 (and so they can't all be 0).
+    It returns the biased variance and is like a weighted version of np.std().
+    For small samples, may want to alter to unbiased variance.
+    Based on: https://stackoverflow.com/questions/2413522/weighted-standard-
+    deviation-in-numpy
+
+    Parameters
+    ----------
+    values : pandas series
+        Dataframe column with the mean scores in each group, NaN removed
+    counts: pandas series
+        Dataframe column with the count of pupils in each group, NaN removed
+
+    Returns
+    -------
+    result : pandas Series
+        Series with each of the calculations, where index if the name of the
+        calculation
+    '''
+    # Check for NaN
+    if values.isnull().any():
+        raise ValueError('There must be no NaN in the values column.')
+    if counts.isnull().any():
+        raise ValueError('There must be no NaN in the counts column.')
+
+    # Weighted mean
+    average = np.average(values, weights=counts)
+    # Weighted std
+    variance = np.average((values-average)**2, weights=counts)
+    std = math.sqrt(variance)
+
+    # Total sample size
+    n_pupils = counts.sum(skipna=True)
+    # Total number of groups
+    n_groups = counts.count()
+
+    # Combine into a series
+    result = pd.Series(
+        [n_pupils, n_groups, average, std],
+        index=['total_pupils', 'group_n', 'group_wt_mean', 'group_wt_std'])
+    return result
+
+
+def create_rag_ratings(df):
+    '''
+    Generate rag ratings (above, average, below) based on scores
+
+    Parameters
+    ----------
+    df : dataframe
+        Contains scores by site, and potentially by pupil group too
+
+    Result:
+    -------
+    rag : dataframe
+        Dataframe with scores by site, with additional columns providing RAG
+        ratings and descriptives of the score distribution that were used to
+        generate the RAG
+    '''
+    # Get name of grouping columns (assumes only columns in the dataframe
+    # are those with mean and count, the site (msoa or school), and then that
+    # all other columns are what scores are grouped by) - i.e. just 'variable'
+    # for area maps, or 'variable' plus the demographic columns
+    score_groups = [e for e in list(df.columns) if e not in [
+        'mean', 'count', 'msoa', 'school_lab']]
+
+    # Filter to non-nan rows (as other rows can't/won't be used in calculation)
+    non_nan = df[~(df['mean'].isnull()) & ~(df['count'].isnull())]
+
+    # Groupby variable and return number of sites, weighted mean + SD
+    wt_mean = (non_nan
+               .groupby(score_groups)
+               .apply(lambda x: score_descriptives(x['mean'], x['count']))
+               .reset_index())
+
+    # Add the record of the weighted mean and SD back to the site-level results
+    rag = pd.merge(df, wt_mean, how='left', on=score_groups)
+
+    # Find 1 SD above and below mean
+    rag['lower'] = rag['group_wt_mean'] - rag['group_wt_std']
+    rag['upper'] = rag['group_wt_mean'] + rag['group_wt_std']
+
+    # Create RAG column based on whether scores were past lower lower and
+    # upper boundaries we generated
+    conditions = [(rag['mean'] <= rag['lower']),
+                  (rag['mean'] > rag['lower']) & (rag['mean'] < rag['upper']),
+                  (rag['mean'] >= rag['upper'])]
+    choices = ['below', 'average', 'above']
+    rag.loc[:, 'rag'] = np.select(conditions, choices, default=np.nan)
+
+    return rag
