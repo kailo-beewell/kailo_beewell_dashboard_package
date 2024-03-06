@@ -6,7 +6,7 @@ numpy==1.26.0
 pandas==2.1.1
 
 # To handle shapefiles and maps
-geopandas==0.9.0
+geopandas==0.14.3
 
 # To create plots
 plotly==5.9.0
@@ -40,3 +40,6 @@ sphinx==7.2.6
 sphinx-rtd-theme==2.0.0
 myst-parser==2.0.0
 sphinx-autoapi==3.0.0
+
+# To generate previews of figures in notebooks
+matplotlib==3.8.3
