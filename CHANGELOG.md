@@ -9,6 +9,23 @@ This should align with:
 * Releases on [PyPI](https://pypi.org/project/kailo-beewell-dashboard/#history)
 * Releases on [GitHub](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/releases) (which are like a non-portable changelog only displayed to users within GitHub)
 
+## Unreleased
+
+**Release date:** tbc
+
+**Contributors:** Amy Heather
+
+Modified package so it can be used to produce the **synthetic public** #BeeWell survey dashboard, as well as the standard and symbol survey dashboards.
+
+### Added
+
+* An introduction to and glossary for CSS to the package documentation
+* CSS stylesheets and image files
+
+### Modified
+
+* Use CSS and image files stored within package rather than within dashboard directory
+
 ## 0.2.0
 
 **Release date:** 1st March 2024
@@ -16,8 +33,6 @@ This should align with:
 **Contributors:** Amy Heather
 
 Modified package so it can be used to produce the **synthetic symbol** #BeeWell survey dashboard, as well as the standard survey dashboard.
-
-https://github.com/kailo-beewell/kailo_beewell_dashboard_package/compare/main...amy
 
 ### Added
 

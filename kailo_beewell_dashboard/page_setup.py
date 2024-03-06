@@ -3,6 +3,7 @@ Helper functions for setting up the page and page formatting.
 '''
 import base64
 import streamlit as st
+from importlib.resources import files
 
 
 def page_logo():
@@ -11,7 +12,9 @@ def page_logo():
     '''
     # Set up logo for display in markdown, which we use instead of st.image()
     # to allow inline display and alt_text
-    file = open('./images/kailo_beewell_logo_padded.png', 'rb')
+    img_path = str(files('kailo_beewell_dashboard')
+                   .joinpath('images/kailo_beewell_logo_padded.png'))
+    file = open(img_path, 'rb')
     contents = file.read()
     url = base64.b64encode(contents).decode('utf-8')
     file.close()
@@ -37,7 +40,7 @@ def page_setup(type):
     Parameters
     ----------
     type : string
-        Survey type - 'standard' or symbol'
+        Survey type - 'standard', 'symbol', or 'public'
     '''
     # Set up streamlit page parameters
     st.set_page_config(
@@ -46,11 +49,12 @@ def page_setup(type):
         initial_sidebar_state='expanded',
         layout='centered',
         menu_items={'About': f'''
-Dashboard for schools completing the {type} version of the #BeeWell survey in
-North Devon and Torridge in 2023/24.'''})
+{type.capitalize()} #BeeWell survey dashboard for North Devon and Torridge in
+2023/24 as part of Kailo.'''})
 
     # Import CSS style
-    with open('css/style.css') as css:
+    css_path = str(files('kailo_beewell_dashboard').joinpath('css/style.css'))
+    with open(css_path) as css:
         st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
     # Add page logo
