@@ -1,38 +1,6 @@
 # Package maintenance
 
-## Testing
-
-Whilst working on the dashboards, you can use a live version of the package to test new features. To do this, set up your virtual environment with requirements.txt file containing `-e ../kailo_beewell_dashboard_package`.
-
-This will import a live version of your local package, assuming that your dashboard folder is sister directories with the package folder.
-
-When running your streamlit site with `streamlit run Home.py`, it will use the package version at the point you ran that command, so you will need to re-run that to get any updates from the package.
-
-It is important to constantly test and update code between the dashboard repositories if you make changes to the package code that would impact functioning - for example, changing a function or input names, requiring a new input in a function you're already using. I would recommend that you update it between the repositories immediately after you've finished making those changes (and not wait to update at the end, at which point you'll have made lots of changes and may not easily recall them all).
-
-## Documentation
-
-If you create any new functions - or modify existing functions - you should create or modify the docstrings accordingly. Docstrings for this package and the accompanying dashboard repositories are formatted based on the [numpy docstring style guide](https://numpydoc.readthedocs.io/en/latest/format.html).
-
-Package documentation is created using Sphinx and hosted on Read the Docs (which automatically updates with GitHub pushes). You can preview updated documentation locally by running the following from the `docs` folder:
-1. `make clean`
-2. `make html`
-
-You can then view the local documentation by opening the file `docs/_build/html/index.html` in your browser.
-
-## Linting
-
-Whilst coding, you should be linting your .py and .ipynb files.
-* Use the `Flake8` VS Code extension to lint your .py files
-* Lint .ipynb files from the terminal by running `nbqa flake8 notebook.ipynb`
-
-## Updating data on TiDB Cloud
-
-If you have made changes to the processing steps that produce the aggregated data, you'll need to make sure that the **updated csv files are uploaded to TiDB Cloud**, replacing the previous data frames.
-
-If you make any changes to where the data are stored on TiDB Cloud (e.g. different cluster), make sure you provided Streamlit Community Cloud with the updated contents of `secrets.toml`.
-
-## Publishing a new version
+## Publishing a new version of the package
 
 When you are ready to publish a new version of this package to PyPI, these are the recommended steps you should go through.
 
@@ -61,13 +29,34 @@ You should always be creating a **new version** when you push to main - or, in o
     * b) Set the tag and the release title to the latest version (i.e. 'vX.X.X')
     * c) For the description, copy from the changelog.
     * d) Upload the .whl and .tar.gz files form dist/. The GitHub release will be linked to your latest commit (which should match the commit that creates those files on PyPI).
-7. **Update package version on community cloud** by:
-    * a) Updating package version in requirements.txt for each dashboard repository
-    * b) Pushing changes to main
-    * c) Rebooting dashboards on [https://share.streamlit.io/](https://share.streamlit.io/)
-    * d) Testing the live dashboard, checking for any bugs or errors
 
 The documentation is hosted with Read the Docs. If any changes were made to the package documentation, this should be automatically updated from your latest GitHub push.
+
+## Updating data on TiDB Cloud
+
+If you have made changes to the processing steps that produce the aggregated data, you'll need to make sure that the **updated csv files are uploaded to TiDB Cloud**, replacing the previous data frames.
+
+If you make any changes to where the data are stored on TiDB Cloud (e.g. different cluster), make sure you provided Streamlit Community Cloud with the updated contents of `secrets.toml`.
+
+## Updating dashboards to use the new package version
+
+See page on **dashboard maintenance**.
+
+## Documentation
+
+If you create any new functions - or modify existing functions - you should create or modify the docstrings accordingly. Docstrings for this package and the accompanying dashboard repositories are formatted based on the [numpy docstring style guide](https://numpydoc.readthedocs.io/en/latest/format.html).
+
+Package documentation is created using Sphinx and hosted on Read the Docs (which automatically updates with GitHub pushes). You can preview updated documentation locally by running the following **from the `docs` folder**:
+1. `make clean`
+2. `make html`
+
+You can then view the local documentation by opening the file `docs/_build/html/index.html` in your browser.
+
+## Linting
+
+Whilst coding, you should be linting your .py and .ipynb files.
+* Use the `Flake8` VS Code extension to lint your .py files
+* Lint .ipynb files from the terminal by running `nbqa flake8 notebook.ipynb`
 
 ## New contributors
 

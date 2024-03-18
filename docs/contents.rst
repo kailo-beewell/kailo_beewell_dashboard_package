@@ -6,6 +6,7 @@ Site contents
    Home <index>
    environments
    package_maintenance
+   dashboard_maintenance
    authentication
    hosting_data
    standard_survey_scores
