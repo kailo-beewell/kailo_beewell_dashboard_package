@@ -26,7 +26,7 @@ If you use this package, please include the following citation
 > Heather, Amy. (2024). kailo-beewell-dashboard: tools to support creation of #BeeWell survey dashboards for the Kailo project (0.2.0). https://pypi.org/project/kailo-beewell-dashboard/.
 
 ```tex
-@software{forecast_tools,
+@software{kailo-beewell-dashboard,
   author = {Heather, Amy},
   title = {kailo-beewell-dashboard},
   date = {2024-03-01},
