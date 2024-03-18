@@ -18,6 +18,7 @@ from .who_took_part import (
     demographic_headers,
     demographic_plots)
 from .reuse_text import reuse_text
+from .images import get_image_path
 
 
 def logo_html():
@@ -30,8 +31,8 @@ def logo_html():
         HTML to generate the logo
     '''
     # Encode image
-    data_uri = base64.b64encode(open('images/kailo_beewell_logo_padded.png',
-                                     'rb').read()).decode('utf-8')
+    img_path = get_image_path('kailo_beewell_logo_padded.png')
+    data_uri = base64.b64encode(open(img_path, 'rb').read()).decode('utf-8')
     # Insert into HTML image tag
     img_tag = f'''
 <img src='data:image/png;base64,{data_uri}' alt='Kailo #BeeWell logo'
@@ -50,8 +51,8 @@ def illustration_html():
         HTML to generate div containing the illustration
     '''
     # Encode image
-    data_uri = base64.b64encode(open('images/home_image_3_transparent.png',
-                                     'rb').read()).decode('utf-8')
+    img_path = get_image_path('home_image_3_transparent.png')
+    data_uri = base64.b64encode(open(img_path, 'rb').read()).decode('utf-8')
     # Insert into HTML image tag
     img_tag = f'''
 <img src='data:image/png;base64,{data_uri}' alt='Kailo illustration'
