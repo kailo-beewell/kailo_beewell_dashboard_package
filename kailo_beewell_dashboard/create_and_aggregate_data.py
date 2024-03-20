@@ -303,8 +303,7 @@ def results_by_site_and_group(
         Links to the type of demographic groupings performed. Either
         'standard', 'symbol' or 'none' - default is standard.
     site_col: string
-        Name of column indicating the site - should be either 'school_lab' or
-        'msoa' - default is 'school_lab'.
+        Name of column with site - e.g. 'school_lab' (default), 'msoa'.
 
     Returns
     -------
