@@ -166,7 +166,7 @@ about {description[f'{chosen_variable}_score'].lower()}</b></p>'''
 
 
 def write_response_section_intro(
-        chosen_variable_lab, output='streamlit', content=None):
+        chosen_variable_lab, output='streamlit', content=None, type='school'):
     '''
     Create the header and description for the section with the bar charts
     showing responses from pupils to each question of a topic.
@@ -183,22 +183,31 @@ def write_response_section_intro(
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
     content : list
         Optional input used when output=='pdf', contains HTML for report.
+    type : string
+        Specifies whether it is a 'school' (default) or 'public' dashboard
 
     Returns
     -------
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-    # Section
-    header = 'Responses from pupils at your school'
-    if output == 'streamlit':
-        st.subheader(header)
-    elif output == 'pdf':
-        content.append(f'<h3>{header}</h3>')
+    # Create phrase to use below, depending on dashboard type
+    if type == 'school':
+        phrase = 'pupils at your school'
+    elif type == 'public':
+        phrase = 'young people across Northern Devon'
+
+    # Section header (currently not used for public dashboard)
+    if type == 'school':
+        header = f'Responses from {phrase}'
+        if output == 'streamlit':
+            st.subheader(header)
+        elif output == 'pdf':
+            content.append(f'<h3>{header}</h3>')
 
     # Section description
     section_descrip = f'''
-In this section, you can see how pupils at you school responded to survey
+In this section, you can see how {phrase} responded to survey
 questions that relate to the topic of '{chosen_variable_lab.lower()}'.'''
     if output == 'streamlit':
         st.markdown(section_descrip)
@@ -225,7 +234,7 @@ def get_chosen_result(chosen_variable, chosen_group, df, school,
     school : string
         Name of school to get results for
     survey_type : string
-        Designates whether this filtering is for 'standard' or 'symbol' survey
+        Specifies whether it is 'standard' (default) or 'symbol' survey
 
     Returns
     ----------
