@@ -43,3 +43,7 @@ sphinx-autoapi==3.0.0
 
 # To generate previews of figures in notebooks
 matplotlib==3.8.3
+
+# To produce interactive streamlit maps
+folium==0.16.0
+streamlit_folium==0.18.0
