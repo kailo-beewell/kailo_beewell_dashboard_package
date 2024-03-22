@@ -216,26 +216,48 @@ Satisfaction of 15-Year-Old Students in 46 Countries. Child Ind Res 14,
 1251–1292 (2021). Available at: https://doi.org/10.1007/s12187-020-09788-8<br>
 [7] #BeeWell Programme Team (2021). #BeeWell survey. Manchester: University of
 Manchester. Available at: https://gmbeewell.org/wp-content/uploads/2021/09/BeeW
-ell-Questionnaires-Booklet.pdf</p>''',
+ell-Questionnaires-Booklet.pdf</p>'''
+}
 
-    # Caution around making comparisons between schools
-    'caution_comparing': '''
-Always be mindful when making comparisons between different schools. There are
+
+def caution_comparing(type):
+    '''
+    Produce section of text providing caution for when making comparisons
+    between schools.
+
+    Parameters
+    ----------
+    type : string
+        Whether this is for 'school' or 'area' dashboard
+
+    Returns
+    -------
+    statement : string
+        Text on caution when comparing
+    '''
+    if type == 'school':
+        unit = 'schools'
+        participants = 'pupils'
+    elif type == 'area':
+        unit = 'areas'
+        participants = 'young people'
+    statement = f'''
+Always be mindful when making comparisons between different {unit}. There are
 a number of factors that could explain differences in scores (whether you are
 above average, average, or below average). These include:
 
 * Random chance ('one-off' findings).
-* Differences in the socio-economic characteristics of pupils and the areas
-where they live (e.g. income, education, ethnicity, access to services and
-amenities).
-* The number of pupils taking part - schools that are much smaller are more
-likely to have more "extreme" results (i.e. above or below average), whilst
-schools with a larger number of pupils who took part are more likely to
-see average results
+* Differences in the socio-economic characteristics of {participants} and the
+areas where they live (e.g. income, education, ethnicity, access to services
+and amenities).
+* The number of {participants} taking part - {unit} that are much smaller are
+more likely to have more "extreme" results (i.e. above or below average),
+whilst {unit} with a larger number of {participants} who took part are more
+likely to see average results.
 
-It's also worth noting that the score will only include results from pupils who
-completed each of the questions used to calculate that topic - so does not
-include any reflection of results from pupils who did not complete some or all
-of the questions for that topic.
+It's also worth noting that the score will only include results from
+{participants} who completed each of the questions used to calculate that topic
+- so does not include any reflection of results from {participants} who did not
+complete some or all of the questions for that topic.
 '''
-}
+    return statement
