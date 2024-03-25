@@ -5,9 +5,6 @@ pip==24.0
 numpy==1.26.0
 pandas==2.1.1
 
-# To handle shapefiles and maps
-geopandas==0.14.3
-
 # To create plots
 plotly==5.9.0
 
@@ -30,7 +27,7 @@ django==4.2.9
 ipykernel==6.29.0
 
 # To create a streamlit dashboard
-streamlit>=1.31.1
+streamlit>=1.32.2
 
 # To upload package to PYPI
 twine==5.0.0
@@ -43,7 +40,3 @@ sphinx-autoapi==3.0.0
 
 # To generate previews of figures in notebooks
 matplotlib==3.8.3
-
-# To produce interactive streamlit maps
-folium==0.16.0
-streamlit_folium==0.18.0
