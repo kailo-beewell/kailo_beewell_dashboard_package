@@ -52,26 +52,6 @@ div[data-testid='stNotificationContentInfo'] > div
     justify-content: center;
 }
 
-/* Box of the status elements */
-div[role='alert']:has(> div > div[data-testid='stNotificationContentError'])
-{
-    background-color: #FFCCCC;
-}
-div[role='alert']:has(> div > div[data-testid='stNotificationContentWarning'])
-{
-    /*background-color: #FFF5E1;*/
-    background-color: #FFE8BF;
-}
-div[role='alert']:has(> div > div[data-testid='stNotificationContentSuccess'])
-{
-    /*background-color: #D1EECC;*/
-    background-color: #B6E6B6;
-}
-div[role='alert']:has(> div > div[data-testid='stNotificationContentInfo'])
-{
-    background-color: #DCE4FF;
-}
-
 /* Hide the input instructions - here, because we want to remove
 'press enter to apply' from the text input box */
 div[data-testid='InputInstructions'] > span:nth-child(1) {

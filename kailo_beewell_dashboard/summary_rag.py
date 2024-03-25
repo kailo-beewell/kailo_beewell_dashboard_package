@@ -6,34 +6,54 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 from markdown import markdown
+from .page_setup import blank_lines
 from .reshape_data import filter_by_group
+from .stylable_container import stylable_container
 from .switch_page_button import switch_page
 
 
-def html_rag_container(text, background, font):
+def create_rag_container(text, background, font, output='streamlit', key=None):
     '''
-    Generates a HTML container with the specified background and font colours,
-    including the text provided, and with class of 'result_box'
+    Generates a streamlit or HTML container with the specified background and
+    font colours, including the text provided, and with class of 'result_box'
+    if its the HTML container
 
     Parameters
     ----------
     text : string
-        Text to go in the container
+        Text to go in the container.
     background : string
-        Background colour
+        Background colour.
     font : string
-        Font colour
+        Font colour.
+    output : string
+        Specifies whether to write for 'streamlit' (default) or 'pdf'.
+    key : string
+        Optional input. Key for the container.
 
     Returns
     -------
     html_string : string
         HTML string, to be appended to the content for the report
     '''
-    html_string = f'''
-<div class='result_box' style='background: {background}; color: {font}'>
-    <p>{text}</p>
-</div>'''
-    return html_string
+    if output == 'streamlit':
+        with stylable_container(
+            key=key,
+            css_styles=f'''{{
+                background-color: {background};
+                border-radius: 0.5rem;
+                padding: 0px}}''',):
+            blank_lines(1)
+            st.markdown(f'''<p style='text-align: center; color: {font};'>
+                        {text}</p>''', unsafe_allow_html=True)
+            blank_lines(1)
+
+    elif output == 'pdf':
+        html_string = f'''
+    <div class='result_box' style='background: {background}; color: {font}'>
+        <p>{text}</p>
+    </div>'''
+        return html_string
 
 
 def result_box(rag, output='streamlit'):
@@ -53,40 +73,29 @@ def result_box(rag, output='streamlit'):
     html_string : string
         HTML string, to be appended to the content for the report
     '''
-    # Below average
+    # Find text and colours depending on RAG rating
     if rag == 'below':
         rag_text = 'Below average'
-        if output == 'streamlit':
-            st.error(rag_text)
-        elif output == 'pdf':
-            html_string = html_rag_container(rag_text, '#FFCCCC', '#95444B')
-
-    # Average
+        background = '#FFCCCC'
+        font = '#95444B'
     elif rag == 'average':
         rag_text = 'Average'
-        if output == 'streamlit':
-            st.warning(rag_text)
-        elif output == 'pdf':
-            html_string = html_rag_container(rag_text, '#FFE8BF', '#AA7A18')
-
-    # Above average
+        background = '#FFE8BF'
+        font = '#AA7A18'
     elif rag == 'above':
         rag_text = 'Above average'
-        if output == 'streamlit':
-            st.success(rag_text)
-        elif output == 'pdf':
-            html_string = html_rag_container(rag_text, '#B6E6B6', '#2B7C47')
-
-    # Less than 10 responses
+        background = '#B6E6B6'
+        font = '#2B7C47'
     elif pd.isnull(rag):
         rag_text = 'n < 10'
-        if output == 'streamlit':
-            st.info(rag_text)
-        elif output == 'pdf':
-            html_string = html_rag_container(rag_text, '#DCE4FF', '#19539A')
+        background = '#DCE4FF'
+        font = '#19539A'
 
-    if output == 'pdf':
-        return html_string
+    # Create for streamlit or PDF
+    if output == 'streamlit':
+        create_rag_container(rag_text, background, font, output, key=rag)
+    elif output == 'pdf':
+        return create_rag_container(rag_text, background, font, output)
 
 
 def rag_intro_column(rag, rag_descrip, output='streamlit'):
@@ -255,7 +264,7 @@ def summary_table(df_scores, chosen_group, chosen_school,
 
     # Filter to variable relevant for summary page
     chosen = chosen[~chosen['variable'].isin([
-        'birth_you_age_score', 'overall_count', 'staff_talk_score', 
+        'birth_you_age_score', 'overall_count', 'staff_talk_score',
         'home_talk_score', 'peer_talk_score'])]
 
     if chosen_group != 'For all pupils':
