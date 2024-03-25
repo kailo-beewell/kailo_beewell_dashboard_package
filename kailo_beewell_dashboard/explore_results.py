@@ -107,19 +107,23 @@ def create_topic_dict(df):
     return topic_dict
 
 
-def choose_topic(df):
+def choose_topic(df, include_raw_name=False):
     '''
     Create topic dictionary and produce selectbox for users to choose a topic
 
     Parameters
     ----------
     df : Dataframe
-        Dataframe which includes oclumns with topic names
+        Dataframe which includes columns with topic names
+    include_raw_name : Boolean
+        Whether to include the raw version of the topic name
 
     Returns
     -------
     chosen_variable_lab : String
         Full and capitalised topic name
+    chosen_variable : String
+        Raw version of topic name
     '''
     # Create dictionary of topics
     topic_dict = create_topic_dict(df)
@@ -137,7 +141,12 @@ def choose_topic(df):
     chosen_variable_lab = st.selectbox(
         '**Topic:**', topic_dict.keys(), index=default)
 
-    return chosen_variable_lab
+    if include_raw_name:
+        # Convert from variable_lab to variable
+        chosen_variable = topic_dict[chosen_variable_lab]
+        return chosen_variable_lab, chosen_variable
+    else:
+        return chosen_variable_lab
 
 
 def write_topic_intro(chosen_variable, chosen_variable_lab, df,
