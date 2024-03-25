@@ -256,8 +256,8 @@ whilst {unit} with a larger number of {participants} who took part are more
 likely to see average results.
 
 It's also worth noting that the score will only include results from
-{participants} who completed each of the questions used to calculate that topic
-- so does not include any reflection of results from {participants} who did not
-complete some or all of the questions for that topic.
+{participants} who completed each of the questions used to calculate that
+topic, and so does not include any reflection of results from {participants}
+who did not complete some or all of the questions for that topic.
 '''
     return statement
