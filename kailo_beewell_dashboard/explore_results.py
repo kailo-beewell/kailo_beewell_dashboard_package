@@ -107,6 +107,39 @@ def create_topic_dict(df):
     return topic_dict
 
 
+def choose_topic(df):
+    '''
+    Create topic dictionary and produce selectbox for users to choose a topic
+
+    Parameters
+    ----------
+    df : Dataframe
+        Dataframe which includes oclumns with topic names
+
+    Returns
+    -------
+    chosen_variable_lab : String
+        Full and capitalised topic name
+    '''
+    # Create dictionary of topics
+    topic_dict = create_topic_dict(df)
+
+    # If session state doesn't contain chosen variable, default to Autonomy
+    # If it does (i.e. set from Summary page), use that
+    if 'chosen_variable_lab' not in st.session_state:
+        st.session_state['chosen_variable_lab'] = 'Autonomy'
+
+    # Convert topics to list and find index of the session state variable
+    topic_list = list(topic_dict.keys())
+    default = topic_list.index(st.session_state['chosen_variable_lab'])
+
+    # Select topic
+    chosen_variable_lab = st.selectbox(
+        '**Topic:**', topic_dict.keys(), index=default)
+
+    return chosen_variable_lab
+
+
 def write_topic_intro(chosen_variable, chosen_variable_lab, df,
                       output='streamlit', content=None):
     '''
