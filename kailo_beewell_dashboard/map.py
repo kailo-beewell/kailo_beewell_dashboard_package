@@ -7,24 +7,10 @@ from kailo_beewell_dashboard.summary_rag import rag_intro_column
 import streamlit as st
 
 
-def area_intro():
+def rag_guide():
     '''
     Produce title, introduction, and RAG key for area results page
     '''
-    st.title('Standard survey')
-
-    blank_lines(1)
-    # view = st.selectbox('What would you like to view?', [
-    #     'Explore results by area',
-    #     'Explore results by characteristics',
-    #     'Who took part?'])
-    # blank_lines(2)
-
-    st.subheader('Introduction')
-    st.markdown('''
-This page shows how the results from young people varied across Northern Devon
-by Middle Layer Super Output Area (MSOA).''')
-
     # Write interpretation of each of the RAG boxes
     rag_descrip_below = '''
 This means that the average scores for young people in that MSOA are **worse**
