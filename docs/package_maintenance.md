@@ -46,7 +46,9 @@ See page on **dashboard maintenance**.
 
 If you create any new functions - or modify existing functions - you should create or modify the docstrings accordingly. Docstrings for this package and the accompanying dashboard repositories are formatted based on the [numpy docstring style guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 
-Package documentation is created using Sphinx and hosted on Read the Docs (which automatically updates with GitHub pushes). You can preview updated documentation locally by running the following **from the `docs` folder**:
+Package documentation is created using Sphinx and hosted on Read the Docs (**which automatically updates with GitHub pushes**). We use readthedocs community, and you can be add as maintainers to the project, https://readthedocs.org/projects/kailo-beewell-dashboard/.
+
+You can preview updated documentation locally by running the following **from the `docs` folder**:
 1. `make clean`
 2. `make html`
 

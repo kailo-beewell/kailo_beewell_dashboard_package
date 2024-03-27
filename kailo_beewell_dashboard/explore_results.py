@@ -141,6 +141,9 @@ def choose_topic(df, include_raw_name=False):
     chosen_variable_lab = st.selectbox(
         '**Topic:**', topic_dict.keys(), index=default)
 
+    # Convert from variable_lab to variable
+    chosen_variable = topic_dict[chosen_variable_lab]
+
     if include_raw_name:
         # Convert from variable_lab to variable
         chosen_variable = topic_dict[chosen_variable_lab]
