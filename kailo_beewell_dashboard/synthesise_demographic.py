@@ -72,3 +72,27 @@ def add_standard_demographic_response_labels(df):
     # Add labels to the dataframe
     df['measure_lab'] = df['measure'].map(labels)
     return df
+
+
+def add_symbol_demographic_response_labels(df):
+    '''
+    Adds labels for each of the demographic survey questions / data in the
+    symbol survey
+
+    Parameters
+    ----------
+    df : dataframe
+        Dataframe containing 'measure' column which we want to add labels to
+    '''
+    # Define labels
+    labels = {
+        'gender': 'Gender',
+        'year_group': 'Year group',
+        'fsm': 'Free school meals',
+        'sen': 'Special educational needs',
+        'ethnicity': 'Ethnicity',
+        'english_additional': 'English as an additional language'}
+
+    # Add labels to the dataframe
+    df['measure_lab'] = df['measure'].map(labels)
+    return df
