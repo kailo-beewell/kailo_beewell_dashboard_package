@@ -90,8 +90,9 @@ def demographic_headers(survey_type='standard'):
 
 
 def demographic_plots(
-        dem_prop, chosen_school, chosen_group, output='streamlit',
-        content=None, survey_type='standard'):
+        dem_prop, chosen_school=None, chosen_group=None,
+        group_lab='school_group_lab', output='streamlit', content=None,
+        survey_type='standard', dashboard_type='school'):
     '''
     Creates the plots for the Who Took Part page/section, with the relevant
     headers and descriptions, for the streamlit dashboard or PDF report.
@@ -101,33 +102,43 @@ def demographic_plots(
     dem_prop : dataframe
         Dataframe with proportion of each responses to demographic questions
     chosen_school : string
-        Name of the chosen school
+        Optional input for school dashboard - name of the chosen school
     chosen_group : string
-        Specifies whether to make plots 'For your school' or 'Compared with
-        other schools in Northern Devon'. Will do the latter unless you input
-        'For your school'.
+        Optional input for school dashboard - specifies whether to make plots
+        'For your school' or 'Compared with other schools in Northern Devon'.
+        Will do the latter unless you input 'For your school'.
+    group_lab : string
+        Name of chosen group  - default is school_group_lab.
     output : string
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
     content : list
         Optional input used when output=='pdf', contains HTML for report.
     survey_type : string
-        Specifies whether this is for standard or symbol survey dashboard.
+        Specifies whether this is for 'standard' (default) or 'symbol'
+        survey dashboard.
+    dashboard_type : string
+        Specifies whether this is for 'school' (default) or 'area' dashboard.
 
     Returns
     -------
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-    # Filter to results from current school
-    chosen = dem_prop[dem_prop['school_lab'] == chosen_school]
-
-    # If only looking at that school, drop the comparator school group data
-    if chosen_group == 'For your school':
-        chosen = chosen[chosen['school_group'] == 1]
-
-    # Extract the nested lists in the dataframe
-    chosen_result = extract_nested_results(
-        chosen=chosen, group_lab='school_group_lab', plot_group=True)
+    # If its for a school dashboard
+    if dashboard_type == 'school':
+        # Filter to results from current school
+        chosen = dem_prop[dem_prop['school_lab'] == chosen_school]
+        # If only looking at that school, drop the comparator school group data
+        if chosen_group == 'For your school':
+            chosen = chosen[chosen['school_group'] == 1]
+        # Extract the nested lists in the dataframe
+        chosen_result = extract_nested_results(
+            chosen=chosen, group_lab=group_lab, plot_group=True)
+    # For area dashboard, less pre-processing required...
+    else:
+        # Extract the nested lists in the dataframe
+        chosen_result = extract_nested_results(
+            chosen=dem_prop, group_lab=group_lab, plot_group=True)
 
     # Generate titles and descriptions for the standard survey, and list of
     # header sections
@@ -140,7 +151,7 @@ def demographic_plots(
     # We don't want section titles and descriptions for the symbol survey
     # so just create list to loop through based on measure names
     elif survey_type == 'symbol':
-        header_list = chosen['measure']
+        header_list = chosen_result['measure'].unique()
 
     # Loop through each of the groups of plots
     # This plots measures in loops, basing printed text on the measure names
