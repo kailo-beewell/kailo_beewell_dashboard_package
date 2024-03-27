@@ -5,7 +5,8 @@ for the dashboard.
 '''
 from collections import defaultdict
 import numpy as np
-from .response_labels import create_response_label_dict
+from .response_labels import (
+    create_response_label_dict, create_symbol_response_label_dict)
 from .synthesise_aggregate import (
     aggregate_proportions, results_by_site_and_group)
 
@@ -20,7 +21,7 @@ def aggregate_standard_responses(df, site_col):
     df : dataframe
         Pupil-level survey responses
     site_col : string
-        Name of column with site to group by (e.g. 'school_lab', 'site)
+        Name of column with site to group by (e.g. 'school_lab', 'site')
     '''
     # Make list of columns that we want to count responses for
     # These are lab columns, but with demographic items removed
@@ -62,6 +63,55 @@ def aggregate_standard_responses(df, site_col):
     return result
 
 
+def aggregate_symbol_responses(df, site_col):
+    '''
+    Aggregate responses to symbol survey (non-demographic), using functions
+    including aggregate_proportions() and results_by_site_and_group().
+
+    Parameters
+    ----------
+    df : dataframe
+        Pupil-level survey responses
+    site_col : string
+        Name of column with site to group by (e.g. 'school_lab', 'site')
+    '''
+    # Make list of columns that we want to count responses for
+    # These are lab columns, but with demographic items removed
+    response_col = [col for col in df.columns if (
+        col.endswith('_lab') and col not in [
+            'gender_lab', 'year_group_lab', 'fsm_lab', 'sen_lab',
+            'ethnicity_lab', 'english_additional_lab', 'school_lab'])]
+
+    # Import dictionary which contains the response options for each question,
+    # for which we want to know the answers to
+    labels = create_symbol_response_label_dict()
+
+    # Add 'NaN': 'No response' to each of the dictionaries
+    # They are stored as dictionary of dictionaries, so we loop through and
+    # update each one
+    for key, value in labels.items():
+        value.update({np.nan: 'No response'})
+
+    # Create version where every question has count 0, to use when a school has
+    # no pupils of a particular subgroup (i.e. no-one in certain
+    # FSM/SEN/gender/year)
+    no_pupils = aggregate_proportions(
+        data=df, response_col=response_col, labels=labels)
+    no_pupils[['count', 'percentage', 'n_responses']] = 0
+
+    # Find results of aggregation for each pupil group
+    result = results_by_site_and_group(
+        data=df, agg_func=aggregate_proportions, no_pupils=no_pupils,
+        response_col=response_col, labels=labels, group_type='symbol',
+        site_col=site_col)
+
+    # Hide results where n<10
+    result.loc[result['n_responses'] < 10,
+               ['count', 'percentage', 'n_responses']] = np.nan
+
+    return result
+
+
 def add_keys(groups, value, keys):
     '''
     Add multiple keys with the same value to the dictionary
@@ -78,7 +128,7 @@ def add_keys(groups, value, keys):
     groups.update(dict.fromkeys(keys, value))
 
 
-def add_topic_groups(df):
+def add_standard_topic_groups(df):
     '''
     Adds a 'group' column providing topic group for each item in 'measure',
     for the standard survey responses
@@ -191,7 +241,7 @@ def add_topic_groups(df):
     return df
 
 
-def add_response_labels(df):
+def add_standard_response_labels(df):
     '''
     Adds labels for each of the survey questions (non-demographic) in the
     standard survey
@@ -433,6 +483,34 @@ How would you feel about speaking with... another person your age''',
         'accept_peer': '''
 Other people your age'''}
 
+    # Add labels to the dataframe
+    df['measure_lab'] = df['measure'].map(labels)
+    return df
+
+
+def add_symbol_response_labels(df):
+    '''
+    Adds labels for each of the survey questions (non-demographic) in the
+    symbol survey
+
+    Parameters
+    ----------
+    df : dataframe
+        Dataframe containing 'measure' column which we want to add labels to
+    '''
+    # Define labels
+    labels = {
+        'symbol_family': 'How do you feel about your family?',
+        'symbol_home': 'How do you feel about your home?',
+        'symbol_friends': 'How do you feel about your friends?',
+        'symbol_choice': (
+            'How do you feel about how much choice you have in life?'),
+        'symbol_things': 'How do you feel about the things that you have?',
+        'symbol_health': 'How do you feel about your health?',
+        'symbol_future': 'How do you feel about your future?',
+        'symbol_school': 'How do you feel about your school?',
+        'symbol_free': 'How do you feel about your free time?',
+        'symbol_life': 'How do you feel about your life?'}
     # Add labels to the dataframe
     df['measure_lab'] = df['measure'].map(labels)
     return df
