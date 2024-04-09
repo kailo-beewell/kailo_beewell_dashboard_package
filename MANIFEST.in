@@ -1,1 +1,3 @@
 include requirements.txt
+include kailo_beewell_dashboard/css/*
+include kailo_beewell_dashboard/images/*

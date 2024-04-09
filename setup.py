@@ -31,6 +31,5 @@ setuptools.setup(
         'Operating System :: POSIX :: Linux',
     ],
     install_requires=requirements,
-    package_data={'kailo_beewell_dashboard.css': ['*.css'],
-                  'kailo_beewell_dashboard.images': ['*.png', '*.jpg']}
+    include_package_data=True
 )
