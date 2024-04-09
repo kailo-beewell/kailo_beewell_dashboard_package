@@ -9,6 +9,42 @@ This should align with:
 * Releases on [PyPI](https://pypi.org/project/kailo-beewell-dashboard/#history)
 * Releases on [GitHub](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/releases) (which are like a non-portable changelog only displayed to users within GitHub)
 
+## 0.3.0
+
+**Release date:** 9th April 2024
+
+**Contributors:** Amy Heather
+
+Modified package so it can be used to produce the **synthetic public** #BeeWell survey dashboard, as well as the standard and symbol survey dashboards.
+
+### Added
+
+* An introduction to and glossary for CSS to the package documentation
+* Step-by-step on dashboard maintenace (updating to use new package version) in package documentation
+* CSS stylesheets and image files
+* `about_page.py` - to produce the About pages for each dashboard - with loads more text used in this added to to `reuse_text.py`
+* Add `choose_topic()` to `explore_results.py` (although produced errors when used on public dashboard as the selectbox wouldn't update correctly between two pages that both used this function, so ended up producing those manually in script rather than using this function, which is now just used in processing)
+* `map.py` - to produce map for public dashboard with results for standard survey by MSOA
+* Add function for `get_image_path()`
+* `topic_labels.py` - names and descriptions used for the standard survey topics
+
+### Changed
+
+* Modified and added to some of the documentation pages (package maintenance, streamlit community cloud)
+* Use CSS and image files stored within package rather than within dashboard directory (modifications throughout package), and import them with package in `setup.py`
+* Renamed `convert_image.py` to `images.py`
+* Seperated `create_and_aggregate_data.py` into four seperate scripts, with modifications and additions throughout that enable it to be used for creation and processing of data for the public dashboard -
+    * `synthesise_aggregate.py`
+    * `synthesise_demographic.py`
+    * `synthesise_responses.py`
+    * `synthesise_scores.py`
+* Modified text of `write_response_section_intro()` and `caution_comparing()` so can be used for public dashboard
+* Standard survey school dashboard no longer imports standard_school_aggregate_scores (and just the version with RAG added)
+* In `extract_nested_results()`, made addition of group optional
+* Changed how the RAG boxes are created in `summary_rag.py`
+* Adapted `who_took_part.py` to work with public dashboard
+* Modified environment in `requirements.txt`
+
 ## 0.2.0
 
 **Release date:** 1st March 2024
@@ -16,8 +52,6 @@ This should align with:
 **Contributors:** Amy Heather
 
 Modified package so it can be used to produce the **synthetic symbol** #BeeWell survey dashboard, as well as the standard survey dashboard.
-
-https://github.com/kailo-beewell/kailo_beewell_dashboard_package/compare/main...amy
 
 ### Added
 

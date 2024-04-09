@@ -2,22 +2,24 @@
 Function to generate a non-interactive PDF version of the dashboard as a
 temporary file that can then be downloaded from the dashboard
 '''
-import os
 import base64
+from .images import get_image_path
+from importlib.resources import files
 from markdown import markdown
+import os
 from .reshape_data import get_school_size
+from .reuse_text import reuse_text
 from .summary_rag import summary_intro, summary_table
 from .explore_results import (
-    write_page_title,
-    create_topic_dict,
+    create_bar_charts,
     create_explore_topic_page,
+    create_topic_dict,
     get_chosen_result,
-    create_bar_charts)
+    write_page_title)
 from .who_took_part import (
     create_demographic_page_intro,
     demographic_headers,
     demographic_plots)
-from .reuse_text import reuse_text
 
 
 def logo_html():
@@ -30,8 +32,8 @@ def logo_html():
         HTML to generate the logo
     '''
     # Encode image
-    data_uri = base64.b64encode(open('images/kailo_beewell_logo_padded.png',
-                                     'rb').read()).decode('utf-8')
+    img_path = get_image_path('kailo_beewell_logo_padded.png')
+    data_uri = base64.b64encode(open(img_path, 'rb').read()).decode('utf-8')
     # Insert into HTML image tag
     img_tag = f'''
 <img src='data:image/png;base64,{data_uri}' alt='Kailo #BeeWell logo'
@@ -50,8 +52,8 @@ def illustration_html():
         HTML to generate div containing the illustration
     '''
     # Encode image
-    data_uri = base64.b64encode(open('images/home_image_3_transparent.png',
-                                     'rb').read()).decode('utf-8')
+    img_path = get_image_path('home_image_3_transparent.png')
+    data_uri = base64.b64encode(open(img_path, 'rb').read()).decode('utf-8')
     # Insert into HTML image tag
     img_tag = f'''
 <img src='data:image/png;base64,{data_uri}' alt='Kailo illustration'
@@ -86,7 +88,9 @@ def structure_report(pdf_title, content):
         os.remove('report/temp_image.png')
 
     # Import the CSS stylesheet
-    with open('css/static_report_style.css') as css:
+    css_path = str(files('kailo_beewell_dashboard')
+                   .joinpath('css/static_report_style.css'))
+    with open(css_path) as css:
         css_style = css.read()
 
     html_content = f'''

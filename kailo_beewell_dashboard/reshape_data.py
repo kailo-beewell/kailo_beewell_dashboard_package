@@ -98,7 +98,7 @@ def filter_by_group(df, chosen_group, output, chosen_school=None,
         return chosen, group_lab, order
 
 
-def extract_nested_results(chosen, group_lab, plot_group=False):
+def extract_nested_results(chosen, group_lab=None, plot_group=False):
     '''
     Extract lists of results that were stored in dataframe.
     e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
@@ -109,7 +109,10 @@ def extract_nested_results(chosen, group_lab, plot_group=False):
     chosen : dataframe
         Dataframe with the nested lists to be extracted
     group_lab : string
-        Name of chosen group (e.g. gender_lab, fsm_lab)
+        Name of chosen group (e.g. gender_lab, fsm_lab) - optional input,
+        default None.
+    plot_group : boolean
+        Whether there is a plot_group column to include - default False.
     '''
     # Initalise empty list to store rows
     df_list = []
@@ -131,7 +134,8 @@ def extract_nested_results(chosen, group_lab, plot_group=False):
             # Add the string columns (no extraction needed)
             df['measure'] = row['measure']
             df['measure_lab'] = row['measure_lab']
-            df['group'] = row[group_lab]
+            if group_lab is not None:
+                df['group'] = row[group_lab]
             if plot_group:
                 df['plot_group'] = row['plot_group']
             df_list.append(df)
@@ -140,7 +144,8 @@ def extract_nested_results(chosen, group_lab, plot_group=False):
         # it to indicate n<10
         else:
             df = row.to_frame().T[['measure', 'measure_lab']]
-            df['group'] = row[group_lab]
+            if group_lab is not None:
+                df['group'] = row[group_lab]
             if plot_group:
                 df['plot_group'] = row['plot_group']
             df['cat'] = 0

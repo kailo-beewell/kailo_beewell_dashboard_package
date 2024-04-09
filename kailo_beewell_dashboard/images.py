@@ -1,8 +1,9 @@
 '''
-Helper function to get the HTML that can be used to produce a figure
+Helper functions for working with image files
 '''
 from tempfile import NamedTemporaryFile
 import base64
+from importlib.resources import files
 
 
 def convert_fig_to_html(fig, alt_text):
@@ -42,3 +43,22 @@ def convert_fig_to_html(fig, alt_text):
 <img src='data:image/png;base64,{data_uri}' alt='{alt_text}'>'''
 
     return img_tag
+
+
+def get_image_path(filename):
+    '''
+    Get path for image in the kailo-beewell-dashboard package
+
+    Parameters
+    ----------
+    filename: string
+        Name of the image file within the package (e.g. 'image.png')
+
+    Returns
+    -------
+    img_path : string
+        Path to image within the package
+    '''
+    img_path = str(files('kailo_beewell_dashboard')
+                   .joinpath(f'images/{filename}'))
+    return img_path

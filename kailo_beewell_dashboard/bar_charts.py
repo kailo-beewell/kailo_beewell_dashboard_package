@@ -6,7 +6,7 @@ from markdown import markdown
 import numpy as np
 import plotly.express as px
 import streamlit as st
-from .convert_image import convert_fig_to_html
+from .images import convert_fig_to_html
 from .grammar import lower_first
 
 

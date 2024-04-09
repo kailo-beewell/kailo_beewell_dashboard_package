@@ -43,8 +43,7 @@ def import_tidb_data(survey_type):
     '''
     # Define the session state variables (keys) and TIDB datasets (values)
     if survey_type == 'standard':
-        items = {'scores': 'standard_school_aggregate_scores',
-                 'scores_rag': 'standard_school_aggregate_scores_rag',
+        items = {'scores_rag': 'standard_school_aggregate_scores_rag',
                  'responses': 'standard_school_aggregate_responses',
                  'counts': 'standard_school_overall_counts',
                  'demographic': 'standard_school_aggregate_demographic'}
