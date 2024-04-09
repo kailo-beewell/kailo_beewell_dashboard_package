@@ -9,6 +9,18 @@ This should align with:
 * Releases on [PyPI](https://pypi.org/project/kailo-beewell-dashboard/#history)
 * Releases on [GitHub](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/releases) (which are like a non-portable changelog only displayed to users within GitHub)
 
+## 0.3.1
+
+**Release date:** 9th April 2024
+
+**Contributors:** Amy Heather
+
+Fixed package so that css and image files are included in dist.
+
+### Fixed
+
+* Fixed so that css and image files are now included in package dist (as previously were excluded)
+
 ## 0.3.0
 
 **Release date:** 9th April 2024
