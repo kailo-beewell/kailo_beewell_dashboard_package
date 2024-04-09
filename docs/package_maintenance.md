@@ -9,22 +9,25 @@ You should always be creating a **new version** when you push to main - or, in o
 1. **Test all dashboards** using the latest version of the package functions, by importing live version of package (`-e ../kailo_beewell_dashboard_package`) before proceeding
 2. **Update version number** using [Semantic Versioning](https://semver.org/spec/v2.0.0.html) in:
     * `__init__.py`
-    * `CITATION.cff` - this is 'version' (not cff-version) - and also, change the date here too on 'date-released'
+    * `CITATION.cff` ('version' not 'cff-version')
     * `README.md` PyPI package badge - change in both the hyperlinks that produce the badge
     * `README.md` Harvard citation
-    * `README.md` Latex citation - and add the new date for the latest version
-3. **Update changelog** (`CHANGELOG.md`) with new version, detailing:
+    * `README.md` Latex citation
+3. **Update the date** in:
+    * `CITATION.cff` ('date-released')
+    * `README.md` Latex citation
+4. **Update changelog** (`CHANGELOG.md`) with new version, detailing:
     * Upload date
     * Contributors
     * Short section (one or two sentences) summarising changes
     * Detailed section with changes, with formatting based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - i.e. possible titles of 'added', 'changed', 'deprecated', 'removed', 'fixed', or 'security'. Can be helpful to compare changes between main and your dev branch before you merge, as that will show you everything you have modified since your last version. To do so on the GitHub site, go to your dev branch (which should have a message like 'This branch is n commits ahead of main.'). Click on the hyperlink in that message, and then on the 'Files changed' tab.
-4. **Push those files** that you just modified through to your development branch
-5. **Push everything to main** on GitHub, and switch to the main branch on VS Code
-6. **Upload to PyPI** for which you need to:
+5. **Push those files** that you just modified through to your development branch
+6. **Push everything to main** on GitHub, and switch to the main branch on VS Code
+7. **Upload to PyPI** for which you need to:
     * a) Delete the existing `dist/` folder
     * b) Run `python setup.py sdist bdist_wheel`
     * c) Run `twine upload --skip-existing --repository-url https://upload.pypi.org/legacy/ dist/*`. You'll be asked to enter your API token, and then new version will be uploaded.
-7. **Create GitHub release** as follows:
+8. **Create GitHub release** as follows:
     * a) Go to GitHub repository > Releases > Draft a new release
     * b) Set the tag and the release title to the latest version (i.e. 'vX.X.X')
     * c) For the description, copy from the changelog.

@@ -29,7 +29,7 @@ If you use this package, please include the following citation
 @software{kailo-beewell-dashboard,
   author = {Heather, Amy},
   title = {kailo-beewell-dashboard},
-  date = {2024-03-01},
+  date = {2024-04-09},
   version = {0.3.0},
   publisher = {PyPI},
   url = {https://pypi.org/project/kailo-beewell-dashboard/}
