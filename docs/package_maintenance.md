@@ -32,8 +32,7 @@ You should always be creating a **new version** when you push to main - or, in o
     * b) Set the tag and the release title to the latest version (i.e. 'vX.X.X')
     * c) For the description, copy from the changelog.
     * d) Upload the .whl and .tar.gz files form dist/. The GitHub release will be linked to your latest commit (which should match the commit that creates those files on PyPI).
-
-The documentation is hosted with Read the Docs. If any changes were made to the package documentation, this should be automatically updated from your latest GitHub push.
+9. If you made any changes to documentation, login to **Read the Docs** and make it rebuild the documentation based on your current GitHub repository
 
 ## Updating data on TiDB Cloud
 
@@ -49,7 +48,10 @@ See page on **dashboard maintenance**.
 
 If you create any new functions - or modify existing functions - you should create or modify the docstrings accordingly. Docstrings for this package and the accompanying dashboard repositories are formatted based on the [numpy docstring style guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 
-Package documentation is created using Sphinx and hosted on Read the Docs (**which automatically updates with GitHub pushes**). We use readthedocs community, and you can be add as maintainers to the project, https://readthedocs.org/projects/kailo-beewell-dashboard/.
+Package documentation is created using Sphinx and hosted on Read the Docs. To force this to update:
+1. Login to Read the Docs (community version)
+2. Go to the project page (https://readthedocs.org/projects/kailo-beewell-dashboard/) - you will need to have been added as a maintainer to the project
+3. Request it to build
 
 You can preview updated documentation locally by running the following **from the `docs` folder**:
 1. `make clean`
