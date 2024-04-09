@@ -14,11 +14,13 @@ It is important to constantly test and update code between the dashboard reposit
 
 Note: You may need to select "reboot" for you app on [https://share.streamlit.io/](https://share.streamlit.io/) to force it to update the app to the latest changes on your GitHub repository.
 
-1. Push all changes to **main** - ensuring that you push the correct **version** of the kailo-beewell-dashboard package in requirements.txt (and not the live reference to the package)
+1. Push all changes to **main**
+    * Ensure that you push the correct **version** of the kailo-beewell-dashboard package in requirements.txt (and not the live reference to the package)
 2. Make sure **changelog** is up-to-date with all changes made, and set the version number and date
     * Note: Versioning of your dashboard is seperate to versioning of the package - they don't need to match!
 3. **Switch the secrets** of dev-version of the dashboard on community cloud to temporarily use the secrets of the stable version (so we can test that the dashboard will work with the stable version of TIDB Cloud)
-4. **Test the dashboard**, checking all functionality on the interactive dashboard and downloadable report
+4. **Test the dashboard**, checking all functionality on the interactive dashboard and downloadable report.
+    * Ensure you are using an environment that matches your requirements.txt file
 5. **Sync the fork** which contains the stable release of your dashboard
 6. **Test again** briefly, to double-check all is operating alright
 7. **Produce GitHub release** in the forked repository, copying the information from your changelog
