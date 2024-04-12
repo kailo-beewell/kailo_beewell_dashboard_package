@@ -8,7 +8,7 @@ from importlib.resources import files
 from markdown import markdown
 import os
 from .reshape_data import get_school_size
-from .reuse_text import reuse_text
+from .reuse_text import reuse_text, caution_comparing
 from .summary_rag import summary_intro, summary_table
 from .explore_results import (
     create_bar_charts,
@@ -195,7 +195,7 @@ def create_static_report(chosen_school, chosen_group, df_scores, df_prop,
 
     # Comparison warning (duplicate text with Explore results.py)
     content.append('<h2>Comparing between schools</h2>')
-    content.append(markdown(reuse_text['caution_comparing']))
+    content.append(markdown(caution_comparing(type='school')))
 
     #####################
     # Table of contents #
@@ -350,7 +350,7 @@ def create_static_symbol_report(
 
     # Using the report (duplicate text with About.py)
     content.append('<h2>How to use this report</h2>')
-    content.append(markdown(reuse_text['caution_comparing']))
+    content.append(markdown(caution_comparing(type='school')))
 
     #####################
     # Table of contents #
