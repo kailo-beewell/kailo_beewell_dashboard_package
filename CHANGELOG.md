@@ -9,6 +9,18 @@ This should align with:
 * Releases on [PyPI](https://pypi.org/project/kailo-beewell-dashboard/#history)
 * Releases on [GitHub](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/releases) (which are like a non-portable changelog only displayed to users within GitHub)
 
+## 0.3.2
+
+**Release date:** 12th April 2024
+
+**Contributors:** Amy Heather
+
+Fixed generation of caution statement in static report for school dashboards.
+
+### Fixed
+
+* Fixed generation of caution comparing statement (to refer to new function rather than old reference to dictionary) for the static reports in the school dashboards
+
 ## 0.3.1
 
 **Release date:** 9th April 2024

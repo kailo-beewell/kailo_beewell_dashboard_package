@@ -1,6 +1,6 @@
 # `kailo-beewell-dashboard`: tools to support creation of #BeeWell survey dashboards for the Kailo project.
 
-[![PyPI package](https://img.shields.io/badge/PyPI_package-0.3.1-2596be.svg)](https://pypi.org/project/kailo-beewell-dashboard/0.3.1/)
+[![PyPI package](https://img.shields.io/badge/PyPI_package-0.3.2-2596be.svg)](https://pypi.org/project/kailo-beewell-dashboard/0.3.2/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ORCID: Amy Heather](https://img.shields.io/badge/ORCID_Amy_Heather-0000--0002--6596--3479-brightgreen)](https://orcid.org/0000-0002-6596-3479)
 
@@ -23,14 +23,14 @@ This package contains functions that are used in the creation of the various #Be
 
 If you use this package, please include the following citation
 
-> Heather, Amy. (2024). kailo-beewell-dashboard: tools to support creation of #BeeWell survey dashboards for the Kailo project (0.3.1). https://pypi.org/project/kailo-beewell-dashboard/.
+> Heather, Amy. (2024). kailo-beewell-dashboard: tools to support creation of #BeeWell survey dashboards for the Kailo project (0.3.2). https://pypi.org/project/kailo-beewell-dashboard/.
 
 ```tex
 @software{kailo-beewell-dashboard,
   author = {Heather, Amy},
   title = {kailo-beewell-dashboard},
-  date = {2024-04-09},
-  version = {0.3.1},
+  date = {2024-04-12},
+  version = {0.3.2},
   publisher = {PyPI},
   url = {https://pypi.org/project/kailo-beewell-dashboard/}
 }
