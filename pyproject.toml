@@ -25,6 +25,8 @@ sphinx-rtd-theme = "2.0.0"
 myst-parser = "2.0.0"
 sphinx-autoapi = "3.0.0"
 matplotlib = "3.8.3"
+setuptools = "69.1.1"
+wheel = "0.42.0"
 
 [build-system]
 requires = ["poetry-core"]
