@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "kailo-beewell-dashboard-package"
+name = "kailo-beewell-dashboard"
+version = "0.3.2"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["ellengoddard <ellenamaliaa@gmail.com>"]
+license = "MIT"
 readme = "README.md"
-package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
@@ -24,7 +25,6 @@ sphinx-rtd-theme = "2.0.0"
 myst-parser = "2.0.0"
 sphinx-autoapi = "3.0.0"
 matplotlib = "3.8.3"
-
 
 [build-system]
 requires = ["poetry-core"]

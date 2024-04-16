@@ -13,6 +13,10 @@ authors:
     email: a.heather2@exeter.ac.uk
     affiliation: University of Exeter
     orcid: 'https://orcid.org/0000-0002-6596-3479'
+ - given-names: Ellen
+    family-names: Goddard
+    email: ellenamaliaa@gmail.com
+    affiliation: Dartington Service Design Lab
 repository-code: >-
   https://github.com/kailo-beewell/kailo_beewell_dashboard_package
 repository-artifact: 'https://pypi.org/project/kailo-beewell-dashboard/'
@@ -25,5 +29,5 @@ keywords:
   - '#BeeWell'
   - Kailo
 license: MIT
-version: 0.3.2
-date-released: '2024-04-12'
+version: 0.3.3
+date-released: '2024-04-16'
