@@ -161,3 +161,5 @@ cython_debug/
 
 # Unknown file
 .DS_Store
+#kpackage is an environment to test package i.e. push up to pypi
+kpackage/
