@@ -17,6 +17,10 @@ authors:
     family-names: Goddard
     email: ellenamaliaa@gmail.com
     affiliation: Dartington Service Design Lab
+  - given-names: Annalise
+    family-names: Clelland
+    email: annalise.clelland@dartington.org.uk
+    affiliation: Dartington Service Design Lab
 repository-code: >-
   https://github.com/kailo-beewell/kailo_beewell_dashboard_package
 repository-artifact: 'https://pypi.org/project/kailo-beewell-dashboard/'
@@ -29,5 +33,5 @@ keywords:
   - '#BeeWell'
   - Kailo
 license: MIT
-version: 0.3.3
-date-released: '2024-04-16'
+version: 0.3.4
+date-released: '2024-04-25'
