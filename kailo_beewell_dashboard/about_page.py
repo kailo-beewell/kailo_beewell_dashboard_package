@@ -52,6 +52,7 @@ def create_about_page(dashboard_type):
     # Page title
     st.title("About")
     st.markdown("Test Ellen")
+    st.markdown("Test Annalise")
 
     # Introduction
     st.markdown(reuse_text["about_intro"])

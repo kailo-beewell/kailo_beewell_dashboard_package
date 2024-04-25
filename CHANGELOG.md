@@ -9,6 +9,17 @@ This should align with:
 * Releases on [PyPI](https://pypi.org/project/kailo-beewell-dashboard/#history)
 * Releases on [GitHub](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/releases) (which are like a non-portable changelog only displayed to users within GitHub)
 
+## 0.3.4
+
+**Release date:** 25th April 2024
+
+**Contibutors:** Annalise Clelland
+
+Test to add more details to markdown 
+
+### Added
+* Test sentence
+
 ## 0.3.3
 
 **Release date:** 16th April 2024
